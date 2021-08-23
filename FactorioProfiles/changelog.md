@@ -10,7 +10,7 @@
  - `Command-Name`
  - `cmdlets`
  - alias
- - about_<MODULENAME>
+ - about_<FactorioProfiles>
  - help_descriptions
  - tab_completion
  - `[object]`

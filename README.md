@@ -1,4 +1,4 @@
-# <MODULENAME>
+# <FactorioProfiles>
 Module description..., different from the one used in the module manifest. (That one goes in the github project description field).
 
 Who this module is aimed at...
@@ -23,7 +23,7 @@ Who this module is aimed at...
     logoColour = 'white'
     
    Turn the badge into a link by surrounding it in [] brackets, and then adding a (...) link afterwards which points to the azure dev ci pipeline page.
-[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/ProgramManager?logo=powershell&logoColor=white)](https://www.powershellgallery.com/packages/<ModuleName>)
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/ProgramManager?logo=powershell&logoColor=white)](https://www.powershellgallery.com/packages/<FactorioProfiles>)
 /\ Replace this one with a shields.io badge. Go to 'Version' -> 'Powershell Gallery (inc. pre-release)'
     Fill out package name
     logo = 'powershell'
@@ -45,13 +45,13 @@ Who this module is aimed at...
 
 ## Getting Started
 ### Installation
-In order to get started with the latest version, simply download the module from the [PSGallery](https://www.powershellgallery.com/packages/<ModuleName>), or install it from powershell by running:
+In order to get started with the latest version, simply download the module from the [PSGallery](https://www.powershellgallery.com/packages/<FactorioProfiles>), or install it from powershell by running:
 ```powershell
-Install-Module <ModuleName>
+Install-Module <FactorioProfiles>
 ```
 Installing this module does not mean that it is loaded automatically on start-up. Powershell supports loading modules on-the-fly since v3, however the first time you run a command it can be a bit slow to tab-complete parameters or values. If you would like to load this module on shell start-up, add the following line to `~\Documents\Powershell\Profile.ps1`:
 ```powershell
-Import-Module <ModuleName>
+Import-Module <FactorioProfiles>
 ```
 
 ### Requirements
@@ -72,7 +72,7 @@ Usage instructions/overview of commands taken from the about file.
 ### Documentation
 For a detailed rundown and explanation of all the features in this module, view the **help page** by running:
 ```powershell
-Get-Help about_<MODULENAME>
+Get-Help about_<FactorioProfiles>
 ```
 For detailed help about a specific command, run:
 ```powershell
@@ -82,12 +82,12 @@ Get-Help <COMMAND NAME> -Full
 ### Extra features
 #### Aliases
 The cmdlets in this module have default aliases:
-|Cmdlet 	     |Alias|
-|----------------|-----|
-|New-<OBJECT>    | n.. |
-|Get-<OBJECT>    | g.. |
-|Set-<OBJECT>    | s.. |
-|Remove-<OBJECT> | r.. |
+| Cmdlet          | Alias |
+| --------------- | ----- |
+| New-<OBJECT>    | n..   |
+| Get-<OBJECT>    | g..   |
+| Set-<OBJECT>    | s..   |
+| Remove-<OBJECT> | r..   |
 
 #### Tab completion
 The `...`[/`...s`] parameter supports tab-completion of valid **existing** <OBJECT> [or <OBJECT>] names in the following cmdlets:
@@ -99,9 +99,9 @@ The `...`[/`...s`] parameter supports tab-completion of valid **existing** <OBJE
 #### Custom scriptblock evaluation
 When creating a new <OBJECT>, you can pass in a scriptblock which will evaluate...
 
-[For details, see `about_<MODULENAME>_scriptblocks`.]
+[For details, see `about_<FactorioProfiles>_scriptblocks`.]
 |
-[For details, see the `...` section in the help at: `about_<MODULENAME>`.]
+[For details, see the `...` section in the help at: `about_<FactorioProfiles>`.]
 
 #### -WhatIf and -Confirm support
 The following cmdlets support `-WhatIf` and `-Confirm` parameters:
@@ -116,11 +116,11 @@ Use `-Confirm` to ask for a prompt for every state-altering change.
 #### Formatting
 The `[<OBJECT>]` [and `[<OBJECT>]`] object[s] within this module has custom formatting rules for all views. Simply pipe the output of the `Get-<OBJECT>` cmdlet to one of:
 | Cmdlet        | Alias |
-|---------------|-------|
-| Format-List   |  fl   |
-| Format-Table  |  ft   |
-| Format-Custom |  fc   |
-| Format-Wide   |  fw   |
+| ------------- | ----- |
+| Format-List   | fl    |
+| Format-Table  | ft    |
+| Format-Custom | fc    |
+| Format-Wide   | fw    |
 
 The `Format-Custom` & `Format-List` views contain the largest amount of information regarding the <OBJECT>.
 
@@ -137,7 +137,7 @@ Install the following:
 
 #### Clone the git repo
 ```
-git clone https://github.com/KubaP/Powershell-<MODULENAME>.git
+git clone https://github.com/KubaP/Powershell-<FactorioProfiles>.git
 ```
 
 #### Run the build scripts
@@ -151,7 +151,7 @@ Navigate to the root repository folder and run the following commands:
 The built module will be located in the `.\publish` folder.
 
 ## Support
-⚠If you need help regarding the usage of the module, please see the **help page** by running `Get-Help about_<MODULENAME>`.
+⚠If you need help regarding the usage of the module, please see the **help page** by running `Get-Help about_<FactorioProfiles>`.
 
 If there is a bug/issue, please file it on the github issue tracker.
 

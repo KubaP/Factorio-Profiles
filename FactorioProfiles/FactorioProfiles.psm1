@@ -1,8 +1,8 @@
 ﻿# Create module-wide variables.
 $script:ModuleRoot = $PSScriptRoot
-$script:ModuleVersion = (Import-PowerShellDataFile -Path "$ModuleRoot\<MODULENAME>.psd1").ModuleVersion
-$script:Folder = "$env:APPDATA\Powershell\<MODULENAME>"
-$script:DataPath = "$env:APPDATA\Powershell\<MODULENAME>\database.$ModuleVersion.xml"
+$script:ModuleVersion = (Import-PowerShellDataFile -Path "$ModuleRoot\FactorioProfiles.psd1").ModuleVersion
+$script:Folder = "$env:APPDATA\Powershell\FactorioProfiles"
+$script:DataPath = "$env:APPDATA\Powershell\FactorioProfiles\database.$ModuleVersion.xml"
 
 # For the debug output to be displayed, $DebugPreference must be set
 # to 'Continue' within the current session.
@@ -13,9 +13,9 @@ Write-Debug "Data folder: $Folder"
 Write-Debug "Database file: $DataPath"
 
 # Create the module data-storage folder if it doesn't exist.
-if (-not (Test-Path -Path "$env:APPDATA\Powershell\<MODULENAME>" -ErrorAction Ignore))
+if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles" -ErrorAction Ignore))
 {
-	New-Item -ItemType Directory -Path "$env:APPDATA" -Name "Powershell\<MODULENAME>" -Force -ErrorAction Stop
+	New-Item -ItemType Directory -Path "$env:APPDATA" -Name "Powershell\FactorioProfiles" -Force -ErrorAction Stop
 	Write-Debug "Created database folder!"
 }
 
@@ -186,7 +186,7 @@ else
 # -----------------------
 <#
 Write-Debug "Checking for databse migration"
-$databaseVersion = [Regex]::Match((Get-Item -Path "$Folder\database.*.xml" -ErrorAction Ignore), ".*?<MODULENAME>\\database.(.*).xml").Groups[1].Value
+$databaseVersion = [Regex]::Match((Get-Item -Path "$Folder\database.*.xml" -ErrorAction Ignore), ".*?<FactorioProfiles>\\database.(.*).xml").Groups[1].Value
 if ($databaseVersion -eq "0.1.0")
 {
 	Write-Debug "`e[4mDetected database version 0.1.0!`e[0m"

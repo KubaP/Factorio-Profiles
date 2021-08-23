@@ -21,9 +21,9 @@
 
 # Remove and re-import the module.
 Write-Host "Starting tests. Importing the module." -ForegroundColor Cyan
-Remove-Module <MODULENAME> -ErrorAction Ignore
-Import-Module "$PSScriptRoot\..\<MODULENAME>.psd1" -Verbose
-Import-Module "$PSScriptRoot\..\<MODULENAME>.psm1" -Force -Verbose
+Remove-Module -ErrorAction Ignore
+Import-Module "$PSScriptRoot\..\FactorioProfiles.psd1" -Verbose
+Import-Module "$PSScriptRoot\..\FactorioProfiles.psm1" -Force -Verbose
 
 # Create the test results directory.
 Write-Host "Creating the test result folder." -ForegroundColor Cyan
@@ -41,7 +41,7 @@ if ($TestGeneral) {
 	Write-Host "Running general tests." -ForegroundColor Cyan
 	
 	# Run through every test file located in \general\
-	foreach ($file in (Get-ChildItem "$PSScriptRoot\general" | Where-Object Name -like "*.Tests.ps1")) {
+	foreach ($file in (Get-ChildItem "$PSScriptRoot\general" | Where-Object Name -Like "*.Tests.ps1")) {
 		Write-Host "`tExecuting $($file.Name)."
 		
 		# Run the tests and save pester output to variable.
@@ -58,11 +58,11 @@ if ($TestGeneral) {
 			$result.TestResult | Where-Object { -not $_.Passed } | ForEach-Object {
 				$name = $_.Name
 				$failedTestResults += [pscustomobject]@{
-					Name	 = "It $name"
+					Name = "It $name"
 					Describe = $_.Describe
-					Context  = $_.Context
-					Result   = $_.Result
-					Message  = $_.FailureMessage
+					Context = $_.Context
+					Result = $_.Result
+					Message = $_.FailureMessage
 				}
 			}
 		}
@@ -80,7 +80,7 @@ if ($TestFunctions -eq $true) {
 	# Run all function tests.
 	$results = Invoke-Pester -Script "$PSScriptRoot\functions\*" -PassThru -Show $Show `
 		-CodeCoverage $functionFiles.FullName -CodeCoverageOutputFile "$PSScriptRoot\..\..\TestResults\CodeCov-Functions.xml" `
-			-OutputFile "$PSScriptRoot\..\..\TestResults\TEST-Functions.xml" -OutputFormat NUnitXml
+		-OutputFile "$PSScriptRoot\..\..\TestResults\TEST-Functions.xml" -OutputFormat NUnitXml
 	
 	foreach ($result in $results) {
 		# Add the test results to counter.
@@ -91,11 +91,11 @@ if ($TestFunctions -eq $true) {
 		$result.TestResult | Where-Object { -not $_.Passed } | ForEach-Object {
 			$name = $_.Name
 			$failedTestResults += [pscustomobject]@{
-				Name	 = "It $name"
+				Name = "It $name"
 				Describe = $_.Describe
-				Context  = $_.Context
-				Result   = $_.Result
-				Message  = $_.FailureMessage
+				Context = $_.Context
+				Result = $_.Result
+				Message = $_.FailureMessage
 			}
 		}
 	}
@@ -107,7 +107,8 @@ $failedTestResults | Sort-Object Describe, Context, Name, Result, Message | Form
 # Display a message at the end.
 if ($totalFailed -eq 0) {
 	Write-Host "All $totalRun tests executed without a single failure." -ForegroundColor Green
-}else { 
+}
+else { 
 	Write-Host "$totalFailed tests out of $totalRun tests failed!" -ForegroundColor Red
 }
 
