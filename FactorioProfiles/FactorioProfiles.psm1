@@ -2,7 +2,10 @@
 $script:ModuleRoot = $PSScriptRoot
 $script:ModuleVersion = (Import-PowerShellDataFile -Path "$ModuleRoot\FactorioProfiles.psd1").ModuleVersion
 $script:Folder = "$env:APPDATA\Powershell\FactorioProfiles"
-$script:DataPath = "$env:APPDATA\Powershell\FactorioProfiles\database.$ModuleVersion.xml"
+$script:DataPath = "$env:APPDATA\Powershell\FactorioProfiles\database.xml"
+
+# FIXME: Temporary way to load a module. Figure out how to load .dll depending on testing or packaged status.
+Import-Module "$script:ModuleRoot\bin\Debug\netstandard2.0\FactorioProfiles.dll"
 
 # For the debug output to be displayed, $DebugPreference must be set
 # to 'Continue' within the current session.
@@ -12,11 +15,37 @@ Write-Debug "Module version: $ModuleVersion"
 Write-Debug "Data folder: $Folder"
 Write-Debug "Database file: $DataPath"
 
-# Create the module data-storage folder if it doesn't exist.
-if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles" -ErrorAction Ignore))
-{
+if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles" -ErrorAction Ignore)) {
+	# Create the module data-storage folder if it doesn't exist.
 	New-Item -ItemType Directory -Path "$env:APPDATA" -Name "Powershell\FactorioProfiles" -Force -ErrorAction Stop
-	Write-Debug "Created database folder!"
+	Write-Debug "Created the data storage folder!"
+}
+
+if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles" -ErrorAction Ignore)) {
+	# Create the profile storage folder if it doesn't exist.
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles" -Name "Profiles" -Force `
+		-ErrorAction Stop
+}
+if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Default" -ErrorAction Ignore)) {
+	# MAYBE: Is this actually necessary ???
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles" -Name "Default" `
+		-Force -ErrorAction Stop
+}
+if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" -ErrorAction Ignore)) {
+	# Create the folder which will contain the "global" factorio profile.
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles" -Name "Global" `
+		-Force -ErrorAction Stop
+	# Create the items which factorio uses.
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" `
+		-Name "config" -Force -ErrorAction Stop	
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" `
+		-Name "mods" -Force -ErrorAction Stop	
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" `
+		-Name "saves" -Force -ErrorAction Stop	
+	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" `
+		-Name "scenarios" -Force -ErrorAction Stop	
+	New-Item -ItemType File -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" `
+		-Name "blueprint-storage.dat" -Force -ErrorAction Stop	
 }
 
 # Potentially force this module script to dot-source the files, rather than 
@@ -24,8 +53,7 @@ if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles" -ErrorActio
 $doDotSource = $global:ModuleDebugDotSource
 $doDotSource = $true # Needed to make code coverage tests work
 
-function Resolve-Path_i
-{
+function Resolve-Path_i {
 	<#
 	.SYNOPSIS
 		Resolves a path, gracefully handling a non-existent path.
@@ -55,15 +83,13 @@ function Resolve-Path_i
 	$resolvedPath = Resolve-Path -Path $Path -ErrorAction Ignore
 	
 	# If NULL, then just return an empty string.
-	if ($null -eq $resolvedPath)
-	{
+	if ($null -eq $resolvedPath) {
 		$resolvedPath = ""
 	}
 	
 	Write-Output $resolvedPath
 }
-function Import-ModuleFile
-{
+function Import-ModuleFile {
 	<#
 	.SYNOPSIS
 		Loads files into the module on module import.
@@ -94,14 +120,12 @@ function Import-ModuleFile
 	# Get the resolved path to avoid any cross-OS issues.
 	$resolvedPath = $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath($Path).ProviderPath
 	
-	if ($doDotSource)
-	{
+	if ($doDotSource) {
 		# Load the file through dot-sourcing.
 		. $resolvedPath	
 		Write-Debug "Dot-sourcing file: $resolvedPath"
 	}
-	else
-	{
+	else {
 		# Load the file through different method (unknown atm?).
 		$ExecutionContext.InvokeCommand.InvokeScript($false, ([scriptblock]::Create([io.file]::ReadAllText($resolvedPath))), $null, $null) 
 		Write-Debug "Importing file: $resolvedPath"
@@ -136,8 +160,7 @@ function Import-ModuleFile
 # If this module file contains the compiled code, import that, but if it
 # doesn't, then import the individual files instead.
 $importIndividualFiles = $false
-if ("<was not built>" -eq '<was not built>')
-{
+if ("<was not built>" -eq '<was not built>') {
 	$importIndividualFiles = $true
 	Write-Debug "Module not built! Importing individual files."
 }
@@ -148,22 +171,19 @@ Write-Debug "Importing individual files: $importIndividualFiles"
 
 # If importing code as individual files, perform the importing.
 # Otherwise, the compiled code below will be loaded.
-if ($importIndividualFiles)
-{
+if ($importIndividualFiles) {
 	Write-Debug "!IMPORTING INDIVIDUAL FILES!"
 	
 	# Execute Pre-import actions.
 	. Import-ModuleFile -Path "$ModuleRoot\internal\preimport.ps1"
 	
 	# Import all internal functions.
-	foreach ($file in (Get-ChildItem "$ModuleRoot\internal\functions" -Filter "*.ps1" -Recurse -ErrorAction Ignore))
-	{
+	foreach ($file in (Get-ChildItem "$ModuleRoot\internal\functions" -Filter "*.ps1" -Recurse -ErrorAction Ignore)) {
 		. Import-ModuleFile -Path $file.FullName
 	}
 	
 	# Import all public functions.
-	foreach ($file in (Get-ChildItem "$ModuleRoot\functions" -Filter "*.ps1" -Recurse -ErrorAction Ignore))
-	{	
+	foreach ($file in (Get-ChildItem "$ModuleRoot\functions" -Filter "*.ps1" -Recurse -ErrorAction Ignore)) {	
 		. Import-ModuleFile -Path $file.FullName
 	}
 	
@@ -173,8 +193,7 @@ if ($importIndividualFiles)
 	# End execution here, do not load compiled code below (if there is any).
 	return
 }
-else
-{
+else {
 	Write-Debug "!LOADING COMPILED CODE!"
 
 	#region Load compiled code
