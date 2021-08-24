@@ -31,7 +31,7 @@
 	)#>
 
 	# Assemblies that are part of this module.
-	NestedModules = @('bin\Debug\netstandard2.0\FactorioProfiles.dll')
+	#NestedModules = @('bin\Debug\netstandard2.0\FactorioProfiles.dll')
 	
 	# Assemblies that must be loaded prior to importing this module
 	# RequiredAssemblies = @('bin\FactorioProfiles.dll')
@@ -48,6 +48,8 @@
 	
 	# Cmdlets to export from this module
 	CmdletsToExport = @(
+		'New-FactorioProfile',
+		'Remove-FactorioProfile'
 	)
 	
 	# Variables to export from this module
