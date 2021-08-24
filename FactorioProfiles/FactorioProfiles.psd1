@@ -49,6 +49,7 @@
 	# Cmdlets to export from this module
 	CmdletsToExport = @(
 		'New-FactorioProfile',
+		'Get-FactorioProfile',
 		'Remove-FactorioProfile'
 	)
 	
