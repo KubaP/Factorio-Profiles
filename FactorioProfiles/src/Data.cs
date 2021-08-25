@@ -61,7 +61,7 @@ namespace FactorioProfiles
 				defaultPath.InnerText = defaultProfileSavePath;
 
 				// Create an element to store the default global settings used for when a profile is created.
-				var defaultSharing = document.CreateElement("DefaultGlobal");
+				var defaultSharing = document.CreateElement("NewProfileSharingSettings");
 				var sharingConfig = document.CreateAttribute("Config");
 				sharingConfig.Value = false.ToString();
 				var sharingMods = document.CreateAttribute("Mods");
@@ -109,9 +109,9 @@ namespace FactorioProfiles
 			return document.DocumentElement.SelectSingleNode("/Data/Config/NewProfileSavePath").InnerText;
 		}
 
-		public static ShareSettings GetDefaultSharingSettings()
+		public static ShareSettings GetNewProfileSharingSettings()
 		{
-			return GetSharingSettings("/Data/Config/DefaultGlobal");
+			return GetSharingSettings("/Data/Config/NewProfileSharingSettings");
 		}
 
 		private static ShareSettings GetSharingSettings(String rootNode)
@@ -160,7 +160,7 @@ namespace FactorioProfiles
 				var profile = new Profile(
 					name,
 					node.SelectSingleNode("Path").InnerText,
-					GetSharingSettings($"/Data/Profiles/Profile[Name = '{name}']/Global"));
+					GetSharingSettings($"/Data/Profiles/Profile[Name = '{name}']/SharingSettings"));
 				list.Add(profile);
 			}
 
@@ -184,7 +184,7 @@ namespace FactorioProfiles
 					var profile = new Profile(
 						nodeName,
 						node.SelectSingleNode("Path").InnerText,
-						GetSharingSettings($"/Data/Profiles/Profile[Name = '{nodeName}']/Global"));
+						GetSharingSettings($"/Data/Profiles/Profile[Name = '{nodeName}']/SharingSettings"));
 
 					return profile;
 				}
@@ -205,7 +205,7 @@ namespace FactorioProfiles
 			var newElementPath = document.CreateElement("Path");
 			newElementPath.InnerText = profile.Path;
 
-			var newElementGlobal = document.CreateElement("Global");
+			var newElementGlobal = document.CreateElement("SharingSettings");
 
 			var newAttrConfig = document.CreateAttribute("Config");
 			newAttrConfig.Value = profile.Settings.ShareConfig.ToString();
@@ -270,7 +270,7 @@ namespace FactorioProfiles
 
 			// Modify the 'Global' node for the correct 'Profile'.
 			var node = document.DocumentElement.SelectSingleNode(
-				$"/Data/Profiles/Profile[Name = '{profile.Name}']/Global");
+				$"/Data/Profiles/Profile[Name = '{profile.Name}']/SharingSettings");
 
 			node.Attributes.GetNamedItem("Config").Value = profile.Settings.ShareConfig.ToString();
 			node.Attributes.GetNamedItem("Mods").Value = profile.Settings.ShareMods.ToString();
@@ -302,7 +302,7 @@ namespace FactorioProfiles
 
 			// Modify the 'DefaultGlobal' node.
 			var node = document.DocumentElement.SelectSingleNode(
-				$"/Data/Config/DefaultGlobal");
+				$"/Data/Config/NewProfileSharingSettings");
 
 			node.Attributes.GetNamedItem("Config").Value = newSettings.ShareConfig.ToString();
 			node.Attributes.GetNamedItem("Mods").Value = newSettings.ShareMods.ToString();

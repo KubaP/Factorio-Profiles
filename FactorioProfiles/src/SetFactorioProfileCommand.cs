@@ -244,7 +244,6 @@ namespace FactorioProfiles
 						profile.MoveFolder(NewPath, this);
 					}
 
-					var modifiedSettings = false;
 					var sharingSettings = new ShareSettings(profile.Settings);
 					if (!String.IsNullOrWhiteSpace(ShareConfig))
 					{
@@ -266,11 +265,7 @@ namespace FactorioProfiles
 					{
 						sharingSettings.ShareBlueprints = Convert.ToBoolean(ShareBlueprints);
 					}
-
-					if (modifiedSettings)
-					{
-						profile.UpdateSharingSettings(sharingSettings, this);
-					}
+					profile.UpdateSharingSettings(sharingSettings, this);
 
 					WriteObject("\u001b[32mSuccessfully modified the profile\u001b[0m");
 
@@ -283,7 +278,7 @@ namespace FactorioProfiles
 						Data.UpdateDefaultPathForNewProfiles(DefaultPathForNewProfiles);
 					}
 
-					var defaultSharingSettings = Data.GetDefaultSharingSettings();
+					var defaultSharingSettings = Data.GetNewProfileSharingSettings();
 					if (!String.IsNullOrWhiteSpace(ShareConfigByDefault))
 					{
 						defaultSharingSettings.ShareConfig = Convert.ToBoolean(ShareConfigByDefault);

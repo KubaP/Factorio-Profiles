@@ -134,7 +134,7 @@ namespace FactorioProfiles
 
 			// Get the default settings for a profile, and then overwrite any of them if 
 			// they have been specified in this cmdlet invocation.
-			var settings = Data.GetDefaultSharingSettings();
+			var settings = Data.GetNewProfileSharingSettings();
 			if (!String.IsNullOrWhiteSpace(UseGlobalConfig))
 			{
 				settings.ShareConfig = Convert.ToBoolean(UseGlobalConfig);
