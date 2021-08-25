@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Management.Automation;
 using System.Runtime.InteropServices;
 
@@ -16,7 +15,8 @@ namespace FactorioProfiles
 		public bool ShareBlueprints;
 
 		// Default constructor. Initialises everything to false.
-		public ShareSettings() {
+		public ShareSettings()
+		{
 			ShareConfig = false;
 			ShareMods = false;
 			ShareSaves = false;
@@ -73,9 +73,9 @@ namespace FactorioProfiles
 					new ErrorRecord(
 						new PSInvalidOperationException(
 							$"The profile folder located at '{Path}' could not be created! Details:\n{e.Message}"),
-						"1",
-						ErrorCategory.InvalidOperation,
-						null));
+							"1",
+							ErrorCategory.InvalidOperation,
+							null));
 			}
 
 			// Get the full expanded path pointing to the "global" profile.
@@ -267,9 +267,9 @@ namespace FactorioProfiles
 					new ErrorRecord(
 						new PSInvalidOperationException(
 							$"The profile folder located at '{Path}' could not be deleted! Details:\n{e.Message}"),
-						"1",
-						ErrorCategory.InvalidOperation,
-						null));
+							"1",
+							ErrorCategory.InvalidOperation,
+							null));
 			}
 
 			// Remove this profile from the database.

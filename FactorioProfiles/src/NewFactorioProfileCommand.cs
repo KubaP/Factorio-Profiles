@@ -108,6 +108,8 @@ namespace FactorioProfiles
 			}
 
 			// If a path is specified, then use that. Otherwise, get the current default save path.
+			// ℹ If a path is specified, there is no need to check if the parent directory exists,
+			// since the 'CreateDirectory()' method will create any missing subdirectories in the process.
 			if (String.IsNullOrWhiteSpace(Path))
 			{
 				Path = Data.GetNewProfileSavePath();
@@ -124,7 +126,7 @@ namespace FactorioProfiles
 			{
 				ThrowTerminatingError(
 					new ErrorRecord(
-						new PSInvalidOperationException($"The desired path '{Path}' already exists!"),
+						new PSInvalidOperationException($"The desired profile path '{Path}' already exists!"),
 						"1",
 						ErrorCategory.InvalidOperation,
 						null));
