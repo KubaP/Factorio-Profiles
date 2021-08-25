@@ -237,6 +237,83 @@ namespace FactorioProfiles
 			CloseFile(document);
 		}
 
+		public static void UpdateProfileName(Profile profile, String newName)
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Modify the 'Name' node for the correct 'Profile'.
+			document.DocumentElement.SelectSingleNode(
+				$"/Data/Profiles/Profile[Name = '{profile.Name}']/Name").InnerText = newName;
+
+			// Save the changes to disk.
+			CloseFile(document);
+		}
+
+		public static void UpdateProfilePath(Profile profile)
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Modify the 'Path' node for the correct 'Profile'.
+			document.DocumentElement.SelectSingleNode(
+				$"/Data/Profiles/Profile[Name = '{profile.Name}']/Path").InnerText = profile.Path;
+
+			// Save the changes to disk.
+			CloseFile(document);
+		}
+
+		public static void UpdateProfileSharingSettings(Profile profile)
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Modify the 'Global' node for the correct 'Profile'.
+			var node = document.DocumentElement.SelectSingleNode(
+				$"/Data/Profiles/Profile[Name = '{profile.Name}']/Global");
+
+			node.Attributes.GetNamedItem("Config").Value = profile.Settings.ShareConfig.ToString();
+			node.Attributes.GetNamedItem("Mods").Value = profile.Settings.ShareMods.ToString();
+			node.Attributes.GetNamedItem("Saves").Value = profile.Settings.ShareSaves.ToString();
+			node.Attributes.GetNamedItem("Scenarios").Value = profile.Settings.ShareScenarios.ToString();
+			node.Attributes.GetNamedItem("Blueprints").Value = profile.Settings.ShareBlueprints.ToString();
+
+			// Save the changes to disk.
+			CloseFile(document);
+		}
+
+		public static void UpdateDefaultPathForNewProfiles(String newPath)
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Modify the 'DefaultPath' node.
+			document.DocumentElement.SelectSingleNode(
+				$"/Data/Config/NewProfileSavePath").InnerText = newPath;
+
+			// Save the changes to disk.
+			CloseFile(document);
+		}
+
+		public static void UpdateDefaultSharingSettings(ShareSettings newSettings)
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Modify the 'DefaultGlobal' node.
+			var node = document.DocumentElement.SelectSingleNode(
+				$"/Data/Config/DefaultGlobal");
+
+			node.Attributes.GetNamedItem("Config").Value = newSettings.ShareConfig.ToString();
+			node.Attributes.GetNamedItem("Mods").Value = newSettings.ShareMods.ToString();
+			node.Attributes.GetNamedItem("Saves").Value = newSettings.ShareSaves.ToString();
+			node.Attributes.GetNamedItem("Scenarios").Value = newSettings.ShareScenarios.ToString();
+			node.Attributes.GetNamedItem("Blueprints").Value = newSettings.ShareBlueprints.ToString();
+
+			// Save the changes to disk.
+			CloseFile(document);
+		}
+
 		public static void Remove(Profile profile)
 		{
 			// Load in the document.
