@@ -15,6 +15,15 @@ namespace FactorioProfiles
 		public bool ShareScenarios;
 		public bool ShareBlueprints;
 
+		// Default constructor. Initialises everything to false.
+		public ShareSettings() {
+			ShareConfig = false;
+			ShareMods = false;
+			ShareSaves = false;
+			ShareScenarios = false;
+			ShareBlueprints = false;
+		}
+
 		public ShareSettings(bool config, bool mods, bool saves, bool scenarios, bool blueprints)
 		{
 			ShareConfig = config;
@@ -22,6 +31,16 @@ namespace FactorioProfiles
 			ShareSaves = saves;
 			ShareScenarios = scenarios;
 			ShareBlueprints = blueprints;
+		}
+
+		// Copy constructor.
+		public ShareSettings(ShareSettings settings)
+		{
+			ShareConfig = settings.ShareConfig;
+			ShareMods = settings.ShareMods;
+			ShareSaves = settings.ShareSaves;
+			ShareScenarios = settings.ShareScenarios;
+			ShareBlueprints = settings.ShareBlueprints;
 		}
 	}
 
