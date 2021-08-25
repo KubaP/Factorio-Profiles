@@ -132,26 +132,26 @@ namespace FactorioProfiles
 
 			// Get the default settings for a profile, and then overwrite any of them if 
 			// they have been specified in this cmdlet invocation.
-			var settings = Data.GetDefaultSettings();
+			var settings = Data.GetDefaultSharingSettings();
 			if (!String.IsNullOrWhiteSpace(UseGlobalConfig))
 			{
-				settings["Config"] = Convert.ToBoolean(UseGlobalConfig);
+				settings.ShareConfig = Convert.ToBoolean(UseGlobalConfig);
 			}
 			if (!String.IsNullOrWhiteSpace(UseGlobalMods))
 			{
-				settings["Mods"] = Convert.ToBoolean(UseGlobalMods);
+				settings.ShareMods = Convert.ToBoolean(UseGlobalMods);
 			}
 			if (!String.IsNullOrWhiteSpace(UseGlobalSaves))
 			{
-				settings["Saves"] = Convert.ToBoolean(UseGlobalSaves);
+				settings.ShareSaves = Convert.ToBoolean(UseGlobalSaves);
 			}
 			if (!String.IsNullOrWhiteSpace(UseGlobalScenarios))
 			{
-				settings["Scenarios"] = Convert.ToBoolean(UseGlobalScenarios);
+				settings.ShareScenarios = Convert.ToBoolean(UseGlobalScenarios);
 			}
 			if (!String.IsNullOrWhiteSpace(UseGlobalBlueprints))
 			{
-				settings["Blueprints"] = Convert.ToBoolean(UseGlobalBlueprints);
+				settings.ShareBlueprints = Convert.ToBoolean(UseGlobalBlueprints);
 			}
 
 			// Create the new 'Profile' object, instantiate any necessary folders, and add it to the database.

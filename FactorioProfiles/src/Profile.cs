@@ -5,31 +5,40 @@ using System.Runtime.InteropServices;
 
 namespace FactorioProfiles
 {
+	class ShareSettings
+	{
+		// Each flag determines if this profile shares anything with the "global" profile.
+		// This can be used, for example, to share blueprints between many profiles.
+		public bool ShareConfig;
+		public bool ShareMods;
+		public bool ShareSaves;
+		public bool ShareScenarios;
+		public bool ShareBlueprints;
+
+		public ShareSettings(bool config, bool mods, bool saves, bool scenarios, bool blueprints)
+		{
+			ShareConfig = config;
+			ShareMods = mods;
+			ShareSaves = saves;
+			ShareScenarios = scenarios;
+			ShareBlueprints = blueprints;
+		}
+	}
+
 	class Profile
 	{
 		// The unique name of this profile.
 		public string Name;
 		// The path at which this profile exists on disk.
 		public string Path;
+		// The sharing settings for this profile.
+		public ShareSettings Settings;
 
-		// Each flag determines if this profile shares anything with the "global" profile.
-		// This can be used, for example, to share blueprints between many profiles.
-		public bool UseGlobalConfig;
-		public bool UseGlobalMods;
-		public bool UseGlobalSaves;
-		public bool UseGlobalScenarios;
-		public bool UseGlobalBlueprints;
-
-		public Profile(String name, String path, Dictionary<String, Boolean> globalSettings)
+		public Profile(String name, String path, ShareSettings settings)
 		{
 			Name = name;
 			Path = path;
-			// Set the config values from the dictionary.
-			UseGlobalConfig = globalSettings["Config"];
-			UseGlobalMods = globalSettings["Mods"];
-			UseGlobalSaves = globalSettings["Saves"];
-			UseGlobalScenarios = globalSettings["Scenarios"];
-			UseGlobalBlueprints = globalSettings["Blueprints"];
+			Settings = settings;
 		}
 
 		public void Create(Cmdlet cmdlet)
@@ -56,35 +65,35 @@ namespace FactorioProfiles
 				Data.globalProfilePath);
 
 			// Create any symlinks to the "global" profile depending on what settings are enabled.
-			if (UseGlobalConfig)
+			if (Settings.ShareConfig)
 			{
 				CreateSymbolicLink(
 					System.IO.Path.Combine(Path, "config"),
 					System.IO.Path.Combine(globalProfilePath, "config"),
 					SymlinkType.Directory);
 			}
-			if (UseGlobalMods)
+			if (Settings.ShareMods)
 			{
 				CreateSymbolicLink(
 					System.IO.Path.Combine(Path, "mods"),
 					System.IO.Path.Combine(globalProfilePath, "mods"),
 					SymlinkType.Directory);
 			}
-			if (UseGlobalSaves)
+			if (Settings.ShareSaves)
 			{
 				CreateSymbolicLink(
 					System.IO.Path.Combine(Path, "saves"),
 					System.IO.Path.Combine(globalProfilePath, "saves"),
 					SymlinkType.Directory);
 			}
-			if (UseGlobalScenarios)
+			if (Settings.ShareScenarios)
 			{
 				CreateSymbolicLink(
 					System.IO.Path.Combine(Path, "scenarios"),
 					System.IO.Path.Combine(globalProfilePath, "scenarios"),
 					SymlinkType.Directory);
 			}
-			if (UseGlobalBlueprints)
+			if (Settings.ShareBlueprints)
 			{
 				CreateSymbolicLink(
 					System.IO.Path.Combine(Path, "blueprint-storage.dat"),

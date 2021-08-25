@@ -109,26 +109,24 @@ namespace FactorioProfiles
 			return document.DocumentElement.SelectSingleNode("/Data/Config/NewProfileSavePath").InnerText;
 		}
 
-		public static Dictionary<String, Boolean> GetDefaultSettings()
+		public static ShareSettings GetDefaultSharingSettings()
 		{
-			return GetSettings("/Data/Config/DefaultGlobal");
+			return GetSharingSettings("/Data/Config/DefaultGlobal");
 		}
 
-		private static Dictionary<String, Boolean> GetSettings(String rootNode)
+		private static ShareSettings GetSharingSettings(String rootNode)
 		{
 			// Load in the document.
 			var document = OpenFile();
 			var node = document.DocumentElement.SelectSingleNode(rootNode);
 
-			// Create and populate the global sharing settings from the attribute values.
-			var dict = new Dictionary<String, Boolean>();
-			dict.Add("Config", Convert.ToBoolean(node.Attributes.GetNamedItem("Config").Value));
-			dict.Add("Mods", Convert.ToBoolean(node.Attributes.GetNamedItem("Mods").Value));
-			dict.Add("Saves", Convert.ToBoolean(node.Attributes.GetNamedItem("Saves").Value));
-			dict.Add("Scenarios", Convert.ToBoolean(node.Attributes.GetNamedItem("Scenarios").Value));
-			dict.Add("Blueprints", Convert.ToBoolean(node.Attributes.GetNamedItem("Blueprints").Value));
-
-			return dict;
+			return new ShareSettings(
+				Convert.ToBoolean(node.Attributes.GetNamedItem("Config").Value),
+				Convert.ToBoolean(node.Attributes.GetNamedItem("Mods").Value),
+				Convert.ToBoolean(node.Attributes.GetNamedItem("Saves").Value),
+				Convert.ToBoolean(node.Attributes.GetNamedItem("Scenarios").Value),
+				Convert.ToBoolean(node.Attributes.GetNamedItem("Blueprints").Value)
+			);
 		}
 
 		public static List<String> GetNames()
@@ -162,7 +160,7 @@ namespace FactorioProfiles
 				var profile = new Profile(
 					name,
 					node.SelectSingleNode("Path").InnerText,
-					GetSettings($"/Data/Profiles/Profile[Name = '{name}']/Global"));
+					GetSharingSettings($"/Data/Profiles/Profile[Name = '{name}']/Global"));
 				list.Add(profile);
 			}
 
@@ -186,7 +184,7 @@ namespace FactorioProfiles
 					var profile = new Profile(
 						nodeName,
 						node.SelectSingleNode("Path").InnerText,
-						GetSettings($"/Data/Profiles/Profile[Name = '{nodeName}']/Global"));
+						GetSharingSettings($"/Data/Profiles/Profile[Name = '{nodeName}']/Global"));
 
 					return profile;
 				}
@@ -210,15 +208,15 @@ namespace FactorioProfiles
 			var newElementGlobal = document.CreateElement("Global");
 
 			var newAttrConfig = document.CreateAttribute("Config");
-			newAttrConfig.Value = profile.UseGlobalConfig.ToString();
+			newAttrConfig.Value = profile.Settings.ShareConfig.ToString();
 			var newAttrMods = document.CreateAttribute("Mods");
-			newAttrMods.Value = profile.UseGlobalMods.ToString();
+			newAttrMods.Value = profile.Settings.ShareMods.ToString();
 			var newAttrSaves = document.CreateAttribute("Saves");
-			newAttrSaves.Value = profile.UseGlobalSaves.ToString();
+			newAttrSaves.Value = profile.Settings.ShareSaves.ToString();
 			var newAttrScenarios = document.CreateAttribute("Scenarios");
-			newAttrScenarios.Value = profile.UseGlobalScenarios.ToString();
+			newAttrScenarios.Value = profile.Settings.ShareScenarios.ToString();
 			var newAttrBlueprints = document.CreateAttribute("Blueprints");
-			newAttrBlueprints.Value = profile.UseGlobalBlueprints.ToString();
+			newAttrBlueprints.Value = profile.Settings.ShareBlueprints.ToString();
 
 			newElementGlobal.Attributes.Append(newAttrConfig);
 			newElementGlobal.Attributes.Append(newAttrMods);
