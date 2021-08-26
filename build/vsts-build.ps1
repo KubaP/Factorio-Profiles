@@ -73,13 +73,11 @@ param
 . "$PSScriptRoot\vsts-helpers.ps1"
 
 # Handle Working Directory paths within Azure pipelines.
-if (-not $WorkingDirectory)
-{
+if (-not $WorkingDirectory) {
 	if ($env:RELEASE_PRIMARYARTIFACTSOURCEALIAS) {
 		$WorkingDirectory = Join-Path -Path $env:SYSTEM_DEFAULTWORKINGDIRECTORY -ChildPath $env:RELEASE_PRIMARYARTIFACTSOURCEALIAS
 	}
-	else
-	{
+	else {
 		$WorkingDirectory = $env:SYSTEM_DEFAULTWORKINGDIRECTORY
 	}
 }
@@ -96,8 +94,7 @@ Get-Module -Verbose
 # Create the publish folder.
 Write-Header -Message "Creating and populating publishing directory" -Colour Cyan
 # Delete any potentially existing 'publish' folder.
-if (Test-Path "$WorkingDirectory\publish")
-{
+if (Test-Path "$WorkingDirectory\publish") {
 	Remove-Item -Path "$WorkingDirectory\publish" -Force -Recurse | Out-Null
 }
 $publishDir = New-Item -Path $WorkingDirectory -Name "publish" -ItemType Directory -Force -Verbose
@@ -106,9 +103,9 @@ $publishDir = New-Item -Path $WorkingDirectory -Name "publish" -ItemType Directo
 # Only copy the files which don't get "compiled", i.e. the module files themselves, the help documentation,
 # and the xml definitions.
 # The content of the actual source code files will get compiled into the main module file.
-New-Item -Path $publishDir.FullName -Name "<FactorioProfiles>" -ItemType Directory -Force | Out-Null
-Copy-Item -Path "$WorkingDirectory\<FactorioProfiles>\*" -Destination "$($publishDir.FullName)\<FactorioProfiles>\" `
-	-Recurse -Force -Exclude "tests","internal","functions" -Verbose
+New-Item -Path $publishDir.FullName -Name "FactorioProfiles" -ItemType Directory -Force | Out-Null
+Copy-Item -Path "$WorkingDirectory\FactorioProfiles\*" -Destination "$($publishDir.FullName)\FactorioProfiles\" `
+	-Recurse -Force -Exclude "tests", "internal", "functions" -Verbose
 
 # Gather text data from scripts for compilation.
 Write-Header -Message "Gathering code from function files." -Colour Cyan
@@ -116,16 +113,14 @@ $text = @()
 $processed = @()
 
 # Gather stuff to run within the module before the main logic.
-foreach ($line in (Get-Content "$PSScriptRoot\filesBefore.txt" | Where-Object { $_ -notlike "#*" }))
-{
+foreach ($line in (Get-Content "$PSScriptRoot\filesBefore.txt" | Where-Object { $_ -notlike "#*" })) {
 	if ([string]::IsNullOrWhiteSpace($line)) { continue }
 	
 	# Resolve the paths to be relative to the publish directory.
-	$basePath = Join-Path "$WorkingDirectory\<FactorioProfiles>" $line
+	$basePath = Join-Path "$WorkingDirectory\FactorioProfiles" $line
 	
 	# Get each file specified by the current line inside of filesBefore.txt
-	foreach ($entry in (Resolve-Path -Path $basePath))
-	{
+	foreach ($entry in (Resolve-Path -Path $basePath)) {
 		# Get the file, discard if it's a folder.
 		$item = Get-Item $entry
 		if ($item.PSIsContainer) { continue }
@@ -139,26 +134,24 @@ foreach ($line in (Get-Content "$PSScriptRoot\filesBefore.txt" | Where-Object { 
 }
 
 # Gather commands of all public and internal functions.
-Get-ChildItem -Path "$WorkingDirectory\<FactorioProfiles>\internal\functions\" -Recurse -File -Filter "*.ps1" | ForEach-Object `
+Get-ChildItem -Path "$WorkingDirectory\FactorioProfiles\internal\functions\" -Recurse -File -Filter "*.ps1" | ForEach-Object `
 {
 	$text += [System.IO.File]::ReadAllText($_.FullName)	
 }
-Get-ChildItem -Path "$WorkingDirectory\<FactorioProfiles>\functions\" -Recurse -File -Filter "*.ps1" | ForEach-Object `
+Get-ChildItem -Path "$WorkingDirectory\FactorioProfiles\functions\" -Recurse -File -Filter "*.ps1" | ForEach-Object `
 {
 	$text += [System.IO.File]::ReadAllText($_.FullName)
 }
 
 # Gather stuff to run within the module after the main logic.
-foreach ($line in (Get-Content "$PSScriptRoot\filesAfter.txt" | Where-Object { $_ -notlike "#*" }))
-{
+foreach ($line in (Get-Content "$PSScriptRoot\filesAfter.txt" | Where-Object { $_ -notlike "#*" })) {
 	if ([string]::IsNullOrWhiteSpace($line)) { continue }
 	
 	# Resolve the paths to be relative to the publish directory.
-	$basePath = Join-Path "$WorkingDirectory\<FactorioProfiles>" $line
+	$basePath = Join-Path "$WorkingDirectory\FactorioProfiles" $line
 		
 	# Get each file specified by the current line inside of filesAfter.txt
-	foreach ($entry in (Resolve-Path -Path $basePath))
-	{
+	foreach ($entry in (Resolve-Path -Path $basePath)) {
 		# Get the file, discard if it's a folder.
 		$item = Get-Item $entry
 		if ($item.PSIsContainer) { continue }
@@ -175,17 +168,15 @@ foreach ($line in (Get-Content "$PSScriptRoot\filesAfter.txt" | Where-Object { $
 # This is done to reduce load times for the module, if all code is within the single .psm1 file.
 # If the code was split across multiple files, the module would take longer when imported.
 Write-Header -Message "Inserting the code into the module file" -Colour Cyan
-$fileData = Get-Content -Path "$($publishDir.FullName)\<FactorioProfiles>\<FactorioProfiles>.psm1" -Raw
+$fileData = Get-Content -Path "$($publishDir.FullName)\FactorioProfiles\FactorioProfiles.psm1" -Raw
 # Change the complied flag to true.
 $fileData = $fileData.Replace('"<was not built>"', '"<was built>"')
 # Paste the text picked up from all files into the .psm1 main file, and save.
 $fileData = $fileData.Replace('"<compile code into here>"', ($text -join "`n`n"))
-[System.IO.File]::WriteAllText("$($publishDir.FullName)\<FactorioProfiles>\<FactorioProfiles>.psm1", $fileData, [System.Text.Encoding]::UTF8)
+[System.IO.File]::WriteAllText("$($publishDir.FullName)\FactorioProfiles\FactorioProfiles.psm1", $fileData, [System.Text.Encoding]::UTF8)
 
-if (-not $SkipPublish)
-{
-	if ($TestRepo)
-	{
+if (-not $SkipPublish) {
+	if ($TestRepo) {
 		# Publish to TESTING PSGallery.
 		Write-Header -Message "TEST Publishing to PSGallery" -Colour Green
 		
@@ -193,7 +184,7 @@ if (-not $SkipPublish)
 		Register-PSRepository -Name "test-repo" -SourceLocation "https://www.poshtestgallery.com/api/v2" `
 			-PublishLocation "https://www.poshtestgallery.com/api/v2/package" -InstallationPolicy Trusted -Verbose `
 			-ErrorAction 'Continue'
-		Publish-Module -Path "$($publishDir.FullName)\<FactorioProfiles>" -NuGetApiKey $ApiKey -Force `
+		Publish-Module -Path "$($publishDir.FullName)\FactorioProfiles" -NuGetApiKey $ApiKey -Force `
 			-Repository "test-repo" -Verbose
 		
 		Write-Header -Message "Waiting 60 seconds before testing download" -Colour Green
@@ -202,42 +193,40 @@ if (-not $SkipPublish)
 		# Uninstall the module if it already exists, to then test the installation of the module from the
 		# test PSGallery.
 		Write-Header -Message "Installing module from PSGallery" -Colour Green
-		Uninstall-Module -Name "<FactorioProfiles>" -Force -Verbose -ErrorAction 'Continue'
-		Install-Module -Name "<FactorioProfiles>" -Repository "test-repo" -Force -AcceptLicense -SkipPublisherCheck -Verbose
+		Uninstall-Module -Name "FactorioProfiles" -Force -Verbose -ErrorAction 'Continue'
+		Install-Module -Name "FactorioProfiles" -Repository "test-repo" -Force -AcceptLicense -SkipPublisherCheck -Verbose
 		Write-Host "Test <FactorioProfiles> module installed." -ForegroundColor Green
 		
 		# Test if the module has been downloaded and imported correctly.
 		Write-Header -Message "Importing module" -Colour Green
-		Import-Module -Name "<FactorioProfiles>" -Verbose
+		Import-Module -Name "FactorioProfiles" -Verbose
 		Get-Module -Verbose
 		
 		# Remove the testing repository.
 		Unregister-PSRepository -Name "test-repo" -Verbose
 	}
-	else
-	{
+	else {
 		# Publish to real repository.
 		Write-Header -Message "Publishing to $Repository" -Colour Green
-		Publish-Module -Path "$($publishDir.FullName)\<FactorioProfiles>" -NuGetApiKey $ApiKey -Force `
+		Publish-Module -Path "$($publishDir.FullName)\FactorioProfiles" -NuGetApiKey $ApiKey -Force `
 			-Repository $Repository -Verbose
 	}
 }
 
-if (-not $SkipArtifact)
-{
+if (-not $SkipArtifact) {
 	# Get the module version number for file labelling.
-	$moduleVersion = (Import-PowerShellDataFile -Path "$PSScriptRoot\..\<FactorioProfiles>\<FactorioProfiles>.psd1").ModuleVersion
+	$moduleVersion = (Import-PowerShellDataFile -Path "$PSScriptRoot\..\FactorioProfiles\FactorioProfiles.psd1").ModuleVersion
 	
 	# Move the module contents to a version-labelled subfolder.
 	Write-Header -Message "Creating Artifact. Moving content to version subfolder" -Colour Magenta
-	New-Item -ItemType Directory -Path "$($publishDir.FullName)\<FactorioProfiles>\" -Name "$moduleVersion" -Force | Out-Null
-	Move-Item -Path "$($publishDir.FullName)\<FactorioProfiles>\*" `
-		-Destination "$($publishDir.FullName)\<FactorioProfiles>\$moduleVersion\" -Exclude "*$moduleVersion*" -Force -Verbose
+	New-Item -ItemType Directory -Path "$($publishDir.FullName)\FactorioProfiles\" -Name "$moduleVersion" -Force | Out-Null
+	Move-Item -Path "$($publishDir.FullName)\FactorioProfiles\*" `
+		-Destination "$($publishDir.FullName)\FactorioProfiles\$moduleVersion\" -Exclude "*$moduleVersion*" -Force -Verbose
 	
 	# Create a packaged zip file of the module folder.
 	Write-Header -Message "Packaging module into archive" -Colour Magenta
-	Compress-Archive -Path "$($publishDir.FullName)\<FactorioProfiles>" `
-		-DestinationPath "$($publishDir.FullName)\<FactorioProfiles>-v$($moduleVersion).zip" -Verbose
+	Compress-Archive -Path "$($publishDir.FullName)\FactorioProfiles" `
+		-DestinationPath "$($publishDir.FullName)\FactorioProfiles-v$($moduleVersion).zip" -Verbose
 	
 	# Write out the module number as a azure pipeline variable for the later run publish task.
 	Write-Host "##vso[task.setvariable variable=version;isOutput=true]$moduleVersion"
