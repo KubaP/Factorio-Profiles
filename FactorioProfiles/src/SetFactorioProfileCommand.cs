@@ -11,6 +11,7 @@ namespace FactorioProfiles
 	{
 		// Parameters for editing a profile.
 		[Parameter(Position = 0, Mandatory = true, ParameterSetName = "Profile")]
+		[ArgumentCompleter(typeof(NameCompleter))]
 		[Alias("Name")]
 		public String Profile { get; set; }
 

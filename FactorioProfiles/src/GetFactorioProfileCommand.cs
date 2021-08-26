@@ -9,6 +9,7 @@ namespace FactorioProfiles
 	public class GetFactorioProfile : PSCmdlet
 	{
 		[Parameter(Position = 0)]
+		[ArgumentCompleter(typeof(NameCompleter))]
 		[Alias("Name")]
 		[AllowNull]
 		public String[] Names { get; set; }

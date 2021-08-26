@@ -8,6 +8,7 @@ namespace FactorioProfiles
 	public class RemoveFactorioProfile : PSCmdlet
 	{
 		[Parameter(Position = 0, Mandatory = true)]
+		[ArgumentCompleter(typeof(NameCompleter))]
 		public String Name { get; set; }
 
 		// BEGIN Block - Runs at the beginning of this cmdlet.
