@@ -40,7 +40,7 @@
 	# TypesToProcess = @('xml\FactorioProfiles.Types.ps1xml')
 	
 	# Format files (.ps1xml) to be loaded when importing this module
-	# FormatsToProcess = @('xml\FactorioProfiles.Format.ps1xml')
+	FormatsToProcess = @('xml\FactorioProfiles.Format.ps1xml')
 	
 	# Functions to export from this module
 	FunctionsToExport = @(

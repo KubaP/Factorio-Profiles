@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<Configuration>
+	<!-- General settings. -->
+	<DefaultSettings>
+		<!-- Shows a '#ERR' string when an error occurs in retrieving data. -->
+		<DisplayError/>
+	</DefaultSettings>
+	
+	<!-- Selection Sets to simplify view declerations. -->
+	<SelectionSets>
+		<SelectionSet>
+			<Name>Set.Profile</Name>
+			<Types>
+				<TypeName>FactorioProfiles.Profile</TypeName>
+			</Types>
+		</SelectionSet>
+	</SelectionSets>
+
+	<ViewDefinitions>
+
+	<!-- LIST -->
+		<View>
+			<Name>Profile.List</Name>
+			<ViewSelectedBy>
+				<SelectionSetName>Set.Profile</SelectionSetName>
+			</ViewSelectedBy>
+			
+			<ListControl>
+				<ListEntries>
+					
+					<!-- BASIC Formatting -->
+					<ListEntry>
+						<ListItems>
+							
+							<ListItem>
+								<Label>Name</Label>
+								<ScriptBlock>
+									$_.Name
+								</ScriptBlock>
+							</ListItem>
+							
+							<ListItem>
+								<Label>Path</Label>
+								<ScriptBlock>
+									$_.Path
+								</ScriptBlock>
+							</ListItem>
+							
+							<ListItem>
+								<Label>Sharing</Label>
+								<ScriptBlock>
+									$obj = $_
+									$str = ""
+
+									if ($obj.Settings.ShareConfig) {
+										$str += "Config, "
+									}
+									if ($obj.Settings.ShareMods) {
+										$str += "Mods, "
+									}
+									if ($obj.Settings.ShareSaves) {
+										$str += "Saves, "
+									}
+									if ($obj.Settings.ShareScenarios) {
+										$str += "Scenarios, "
+									}
+									if ($obj.Settings.ShareBlueprints) {
+										$str += "Blueprints, "
+									}
+									return $str.Remove($str.Length - 2, 2)
+								</ScriptBlock>
+							</ListItem>
+							
+						</ListItems>
+					</ListEntry>
+					
+				</ListEntries>
+			</ListControl>
+		</View>
+
+		<!-- TABLE -->
+		<View>
+			<Name>Profile.Table</Name>
+			<ViewSelectedBy>
+				<SelectionSetName>Set.Profile</SelectionSetName>
+			</ViewSelectedBy>
+			
+			<TableControl>
+				<!-- The table headers. -->
+				<TableHeaders>
+					
+					<TableColumnHeader>
+						<Label>Name</Label>
+						<Width>20</Width>
+						<Alignment>Left</Alignment>
+					</TableColumnHeader>
+					
+					<TableColumnHeader>
+						<Label>Path</Label>
+						<Width>35</Width>
+						<Alignment>Left</Alignment>
+					</TableColumnHeader>
+					
+					<TableColumnHeader>
+						<Label>Sharing</Label>
+						<Width>35</Width>
+						<Alignment>Left</Alignment>
+					</TableColumnHeader>
+					
+				</TableHeaders>
+				
+				<!-- The table rows. -->
+				<TableRowEntries>
+					
+					<!-- BASIC Formatting -->
+					<TableRowEntry>
+						<TableColumnItems>
+
+							<TableColumnItem>
+								<PropertyName>Name</PropertyName>
+								<Alignment>Left</Alignment>
+							</TableColumnItem>
+							
+							<TableColumnItem>
+								<ScriptBlock>
+									return $_.Path.Replace("$env:APPDATA\", "%APPDATA%\").Replace("$env:LOCALAPPDATA\", "%LOCALAPPDATA%\").Replace("$env:USERPROFILE\", "~\").Replace("$env:HOME\", "~\")
+								</ScriptBlock>
+								<Alignment>Left</Alignment>
+							</TableColumnItem>
+							
+							<TableColumnItem>
+								<ScriptBlock>
+									$obj = $_
+									$str = ""
+
+									if ($obj.Settings.ShareConfig) {
+										$str += "Config, "
+									}
+									if ($obj.Settings.ShareMods) {
+										$str += "Mods, "
+									}
+									if ($obj.Settings.ShareSaves) {
+										$str += "Saves, "
+									}
+									if ($obj.Settings.ShareScenarios) {
+										$str += "Scenarios, "
+									}
+									if ($obj.Settings.ShareBlueprints) {
+										$str += "Blueprints, "
+									}
+									return $str.Remove($str.Length - 2, 2)
+								</ScriptBlock>
+								<Alignment>Left</Alignment>
+							</TableColumnItem>
+
+						</TableColumnItems>
+					</TableRowEntry>
+
+				</TableRowEntries>
+			</TableControl>
+		</View>
+
+		<!-- CUSTOM -->
+		<View>
+			<Name>Profile.Custom</Name>
+			<ViewSelectedBy>
+				<SelectionSetName>Set.Profile</SelectionSetName>
+			</ViewSelectedBy>
+			
+			<CustomControl>
+				<CustomEntries>
+					
+					<!-- BASIC Formatting -->
+					<CustomEntry>
+						<CustomItem>
+							<Frame>
+								<CustomItem>
+									<NewLine />
+									
+									<ExpressionBinding>
+										<ScriptBlock>
+											"class Profile"
+										</ScriptBlock>
+									</ExpressionBinding>
+									
+									<NewLine />
+									<Text>{</Text>
+									<NewLine />
+									
+									<Frame>
+										<LeftIndent>4</LeftIndent>
+										<CustomItem>
+											
+											<ExpressionBinding>
+												<ScriptBlock>
+													"Name = $($_.Name)"
+												</ScriptBlock>
+											</ExpressionBinding>
+											<NewLine />
+											
+											<ExpressionBinding>
+												<ScriptBlock>
+													"Path = $($_.Path)"
+												</ScriptBlock>
+											</ExpressionBinding>
+											<NewLine />
+											
+											<ExpressionBinding>
+												<ScriptBlock>
+													"Settings = class Settings"
+												</ScriptBlock>
+											</ExpressionBinding>
+											<NewLine />
+											<Text>{</Text>
+											<NewLine />
+
+											<Frame>
+												<LeftIndent>4</LeftIndent>
+												<CustomItem>
+
+													<ExpressionBinding>
+														<ScriptBlock>
+															"ShareConfig = $($_.Settings.ShareConfig)"
+														</ScriptBlock>
+													</ExpressionBinding>
+													<NewLine />
+
+													<ExpressionBinding>
+														<ScriptBlock>
+															"ShareMods = $($_.Settings.ShareMods)"
+														</ScriptBlock>
+													</ExpressionBinding>
+													<NewLine />
+
+													<ExpressionBinding>
+														<ScriptBlock>
+															"ShareSaves = $($_.Settings.ShareSaves)"
+														</ScriptBlock>
+													</ExpressionBinding>
+													<NewLine />
+
+													<ExpressionBinding>
+														<ScriptBlock>
+															"ShareScenarios = $($_.Settings.ShareScenarios)"
+														</ScriptBlock>
+													</ExpressionBinding>
+													<NewLine />
+
+													<ExpressionBinding>
+														<ScriptBlock>
+															"ShareBlueprints = $($_.Settings.ShareBlueprints)"
+														</ScriptBlock>
+													</ExpressionBinding>
+													<NewLine />
+
+												</CustomItem>
+											</Frame>
+
+											<Text>}</Text>
+											<NewLine />
+											
+										</CustomItem>
+									</Frame>
+									
+									<Text>}</Text>
+									
+								</CustomItem>
+							</Frame>
+						</CustomItem>
+					</CustomEntry>
+					
+				</CustomEntries>
+			</CustomControl>
+		</View>
+
+		<!-- WIDE -->
+		<View>
+			<Name>Profile.Wide</Name>
+			<ViewSelectedBy>
+				<SelectionSetName>Set.Profile</SelectionSetName>
+			</ViewSelectedBy>
+			
+			<WideControl>
+				<WideEntries>
+					
+					<!-- BASIC Formatting -->
+					<WideEntry>
+						<WideItem>
+							<ScriptBlock>
+								$_.Name
+							</ScriptBlock>
+						</WideItem>
+					</WideEntry>
+
+				</WideEntries>
+			</WideControl>
+		</View>
+
+	</ViewDefinitions>
+</Configuration>
