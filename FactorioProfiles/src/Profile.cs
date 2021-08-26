@@ -1,5 +1,6 @@
 using System;
 using System.Management.Automation;
+using System.Management.Automation.Host;
 using System.Runtime.InteropServices;
 
 namespace FactorioProfiles
@@ -252,6 +253,81 @@ namespace FactorioProfiles
 					System.IO.Path.Combine(globalProfilePath, itemName),
 					type);
 			}
+		}
+
+		public void Switch(PSCmdlet cmdlet)
+		{
+			// Switch to this profile, by symlinking the appdata factorio folder to the location of this profile.
+			var factorioAppdataPath = System.IO.Path.Combine(
+				System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+				"Factorio");
+
+			if (System.IO.Directory.Exists(factorioAppdataPath))
+			{
+				// Check if the folder is real, i.e. not a symlink.
+				var dirInfo = new System.IO.FileInfo(factorioAppdataPath);
+				if (!dirInfo.Attributes.HasFlag(System.IO.FileAttributes.ReparsePoint))
+				{
+					// There already is something there, so ask the user for confirmation.
+					var result = cmdlet.Host.UI.PromptForChoice(
+						"\n",
+						$"Detected an existing factorio profile at '%APPDATA%\\Factorio'. Do you want to:",
+						new System.Collections.ObjectModel.Collection<ChoiceDescription> {
+							new ChoiceDescription("&Go ahead anyway with switching",
+								"This will delete any content in the existing profile folder."),
+							new ChoiceDescription("&Cancel",
+								"This will stop the execution of this cmdlet.\nYou can then create a new profile and move the contents over.")},
+						1);
+
+					switch (result)
+					{
+						case 0:
+							// Force continue option, so delete the existing folder.
+							try
+							{
+								System.IO.Directory.Delete(factorioAppdataPath, true);
+							}
+							catch (System.Exception e)
+							{
+								cmdlet.ThrowTerminatingError(
+									new ErrorRecord(
+										new PSInvalidOperationException(
+											$"The folder located at '%APPDATA%\\Factorio' could not be deleted! Details:\n{e.Message}"),
+											"1",
+											ErrorCategory.InvalidOperation,
+											null));
+							}
+							break;
+						case 1:
+							// Cancel option, so return out of the cmdlet, i.e. stop it.
+							return;
+						default:
+							break;
+					}
+				}
+				else
+				{
+					// There is already a symlink, so just delete it to make room.
+					System.IO.Directory.Delete(factorioAppdataPath);
+				}
+			}
+
+			// Validate that the path of this profile exists, as a sanity check.
+			if (!System.IO.Directory.Exists(Path))
+			{
+				cmdlet.ThrowTerminatingError(
+					new ErrorRecord(
+						new PSInvalidOperationException(
+							$"Could not find the profile path at '{Path}'!"),
+							"1",
+							ErrorCategory.InvalidOperation,
+							null));
+			}
+
+			// Create the symlink.
+			CreateSymbolicLink(factorioAppdataPath, Path, SymlinkType.Directory);
+
+			cmdlet.WriteObject("\u001b[32mSuccessfully switched profiles\u001b[0m");
 		}
 
 		public void Destroy(Cmdlet cmdlet)
