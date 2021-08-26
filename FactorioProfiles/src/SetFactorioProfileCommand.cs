@@ -167,7 +167,6 @@ namespace FactorioProfiles
 						// Moving the location of the profile to a new path.
 
 						// Ensure that the path isn't already taken.
-						// TODO: Make this a prompt instead.
 						while (System.IO.Directory.Exists(NewPath))
 						{
 							var result = this.Host.UI.PromptForChoice(
@@ -274,7 +273,66 @@ namespace FactorioProfiles
 
 					if (!String.IsNullOrWhiteSpace(DefaultPathForNewProfiles))
 					{
-						// TODO: Check if the path exists, and if not, put a prompt warning.
+						// Check if the path exists, and if not, put a continuation prompt.
+						var loop = true;
+						while (loop)
+						{
+							var expandedPath = System.Environment.ExpandEnvironmentVariables(DefaultPathForNewProfiles);
+							if (!System.IO.Directory.Exists(expandedPath))
+							{
+								// The directory doesn't exist, so prompt the user.
+								var result = this.Host.UI.PromptForChoice(
+									"\n",
+									$"The path '{DefaultPathForNewProfiles}' cannot be found. Do you want to:",
+									new System.Collections.ObjectModel.Collection<ChoiceDescription> {
+									new ChoiceDescription("&Provide a new path",
+										"This will request a new path as a string input."),
+									new ChoiceDescription("&Use this path anyway",
+										"This will go ahead with the execution of this cmdlet."),
+									new ChoiceDescription("&Cancel",
+										"This will stop the execution of this cmdlet.")},
+									2);
+
+								switch (result)
+								{
+									case 0:
+										// New path option, so ask for a new string.
+										var res = this.Host.UI.Prompt(
+											"\n",
+											$"Please enter a new path which is not '{DefaultPathForNewProfiles}'",
+											new System.Collections.ObjectModel.Collection<FieldDescription> {
+											new FieldDescription("New Path")
+												});
+
+										// Retrieve the inputted value.
+										PSObject input;
+										res.TryGetValue("New Path", out input);
+										// I'm not sure if this could fail somehow, but just in case, do a sanity check.
+										// If for some reason 'input' is null, the 'Name' won't be changed and the loop
+										// will re-run once again.
+										if (input != null)
+										{
+											DefaultPathForNewProfiles = input.ToString();
+										}
+										break;
+									case 1:
+										// Go ahead with the path anyway, so exit the loop.
+										loop = false;
+										break;
+									case 2:
+										// Cancel option, so return out of the cmdlet, i.e. stop it.
+										return;
+									default:
+										break;
+								}
+
+							}
+							else
+							{
+								// The directory exists, so exit the loop.
+								loop = false;
+							}
+						}
 						Data.UpdateDefaultPathForNewProfiles(DefaultPathForNewProfiles);
 					}
 
