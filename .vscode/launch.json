@@ -8,7 +8,7 @@
             "name": "ps Debug",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build debug",
             "program": "pwsh",
             "justMyCode": false,
             "args": [
