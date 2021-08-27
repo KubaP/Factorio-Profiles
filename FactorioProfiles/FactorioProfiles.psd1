@@ -50,6 +50,7 @@
 	CmdletsToExport = @(
 		'New-FactorioProfile',
 		'Get-FactorioProfile',
+		'Get-FactorioProfileSettings',
 		'Set-FactorioProfileOption',
 		'Remove-FactorioProfile',
 		'Switch-FactorioProfile'
