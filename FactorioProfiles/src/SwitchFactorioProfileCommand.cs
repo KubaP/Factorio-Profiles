@@ -1,5 +1,6 @@
 using System;
 using System.Management.Automation;
+using System.Management.Automation.Host;
 using System.Linq;
 
 namespace FactorioProfiles
@@ -38,6 +39,34 @@ namespace FactorioProfiles
 						"1",
 						ErrorCategory.InvalidData,
 						null));
+			}
+
+			// Check if 'factorio.exe' is running, and if it is, present a prompt.
+			var process = System.Diagnostics.Process.GetProcessesByName("factorio");
+			if (process.Length > 0)
+			{
+				// The process is running, so prompt the user.
+				var result = this.Host.UI.PromptForChoice(
+					"\n",
+					"Detected 'factorio.exe' process currently running. Do you want to:",
+					new System.Collections.ObjectModel.Collection<ChoiceDescription> {
+									new ChoiceDescription("&Switch anyway",
+										"This will switch the profile. !!! WARNING: This may break the game or your save data. Proceed at own risk. !!!"),
+									new ChoiceDescription("&Cancel",
+										"This will stop the execution of this cmdlet.")},
+					1);
+
+				switch (result)
+				{
+					case 0:
+						// Continue option, so just exit out of the switch statement.
+						break;
+					case 1:
+						// Cancel option, so return out of the cmdlet, i.e. stop it.
+						return;
+					default:
+						break;
+				}
 			}
 
 			var profile = Data.GetProfile(Name);
