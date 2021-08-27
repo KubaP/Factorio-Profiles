@@ -15,27 +15,27 @@ namespace FactorioProfiles
 		[Parameter(Position = 1)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
-		public String UseGlobalConfig { get; set; }
+		public String ShareConfig { get; set; }
 
 		[Parameter(Position = 2)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
-		public String UseGlobalMods { get; set; }
+		public String ShareMods { get; set; }
 
 		[Parameter(Position = 3)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
-		public String UseGlobalSaves { get; set; }
+		public String ShareSaves { get; set; }
 
 		[Parameter(Position = 4)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
-		public String UseGlobalScenarios { get; set; }
+		public String ShareScenarios { get; set; }
 
 		[Parameter(Position = 5)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
-		public String UseGlobalBlueprints { get; set; }
+		public String ShareBlueprints { get; set; }
 
 		[Parameter(Position = 6)]
 		public String Path { get; set; }
@@ -135,25 +135,25 @@ namespace FactorioProfiles
 			// Get the default settings for a profile, and then overwrite any of them if 
 			// they have been specified in this cmdlet invocation.
 			var settings = Data.GetNewProfileSharingSettings();
-			if (!String.IsNullOrWhiteSpace(UseGlobalConfig))
+			if (!String.IsNullOrWhiteSpace(ShareConfig))
 			{
-				settings.ShareConfig = Convert.ToBoolean(UseGlobalConfig);
+				settings.ShareConfig = Convert.ToBoolean(ShareConfig);
 			}
-			if (!String.IsNullOrWhiteSpace(UseGlobalMods))
+			if (!String.IsNullOrWhiteSpace(ShareMods))
 			{
-				settings.ShareMods = Convert.ToBoolean(UseGlobalMods);
+				settings.ShareMods = Convert.ToBoolean(ShareMods);
 			}
-			if (!String.IsNullOrWhiteSpace(UseGlobalSaves))
+			if (!String.IsNullOrWhiteSpace(ShareSaves))
 			{
-				settings.ShareSaves = Convert.ToBoolean(UseGlobalSaves);
+				settings.ShareSaves = Convert.ToBoolean(ShareSaves);
 			}
-			if (!String.IsNullOrWhiteSpace(UseGlobalScenarios))
+			if (!String.IsNullOrWhiteSpace(ShareScenarios))
 			{
-				settings.ShareScenarios = Convert.ToBoolean(UseGlobalScenarios);
+				settings.ShareScenarios = Convert.ToBoolean(ShareScenarios);
 			}
-			if (!String.IsNullOrWhiteSpace(UseGlobalBlueprints))
+			if (!String.IsNullOrWhiteSpace(ShareBlueprints))
 			{
-				settings.ShareBlueprints = Convert.ToBoolean(UseGlobalBlueprints);
+				settings.ShareBlueprints = Convert.ToBoolean(ShareBlueprints);
 			}
 
 			// Create the new 'Profile' object, instantiate any necessary folders, and add it to the database.
