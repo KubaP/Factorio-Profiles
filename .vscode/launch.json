@@ -14,7 +14,7 @@
             "args": [
                 "-NoExit",
                 "-Command",
-                "Import-Module ${workspaceFolder}\\FactorioProfiles\\FactorioProfiles.psd1",
+                "Import-Module ${workspaceFolder}\\FactorioProfiles\\FactorioProfiles.psd1 -Force",
             ],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
