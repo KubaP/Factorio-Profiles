@@ -39,6 +39,14 @@ namespace FactorioProfiles
 						null));
 			}
 
+			var profile = Data.GetProfile(Name);
+
+			// Warn if the profile folder doesn't exist.
+			if (!System.IO.Directory.Exists(profile.Path))
+			{
+				WriteWarning($"The profile folder at '{profile.Path}' could not be located.");
+			}
+
 			// Delete the profile.
 			Data.GetProfile(Name).Destroy(this);
 

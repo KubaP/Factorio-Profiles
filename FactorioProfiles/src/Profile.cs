@@ -79,47 +79,12 @@ namespace FactorioProfiles
 							null));
 			}
 
-			// Get the full expanded path pointing to the "global" profile.
-			var globalProfilePath = System.IO.Path.Combine(
-				System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
-				Data.globalProfilePath);
-
 			// Create any symlinks to the "global" profile depending on what settings are enabled.
-			if (Settings.ShareConfig)
-			{
-				CreateSymbolicLink(
-					System.IO.Path.Combine(Path, "config"),
-					System.IO.Path.Combine(globalProfilePath, "config"),
-					SymlinkType.Directory);
-			}
-			if (Settings.ShareMods)
-			{
-				CreateSymbolicLink(
-					System.IO.Path.Combine(Path, "mods"),
-					System.IO.Path.Combine(globalProfilePath, "mods"),
-					SymlinkType.Directory);
-			}
-			if (Settings.ShareSaves)
-			{
-				CreateSymbolicLink(
-					System.IO.Path.Combine(Path, "saves"),
-					System.IO.Path.Combine(globalProfilePath, "saves"),
-					SymlinkType.Directory);
-			}
-			if (Settings.ShareScenarios)
-			{
-				CreateSymbolicLink(
-					System.IO.Path.Combine(Path, "scenarios"),
-					System.IO.Path.Combine(globalProfilePath, "scenarios"),
-					SymlinkType.Directory);
-			}
-			if (Settings.ShareBlueprints)
-			{
-				CreateSymbolicLink(
-					System.IO.Path.Combine(Path, "blueprint-storage.dat"),
-					System.IO.Path.Combine(globalProfilePath, "blueprint-storage.dat"),
-					SymlinkType.File);
-			}
+			SharingSettingFolder(false, Settings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
+			SharingSettingFolder(false, Settings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
+			SharingSettingFolder(false, Settings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
+			SharingSettingFolder(false, Settings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
+			SharingSettingFolder(false, Settings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
 
 			// Add this profile to the database.
 			Data.Add(this);
@@ -247,11 +212,25 @@ namespace FactorioProfiles
 								ErrorCategory.InvalidOperation,
 								null));
 				}
+
 				// Then, create the symbolic link.
-				CreateSymbolicLink(
-					itemPath,
-					System.IO.Path.Combine(globalProfilePath, itemName),
-					type);
+				try
+				{
+					CreateSymbolicLink(
+						itemPath,
+						System.IO.Path.Combine(globalProfilePath, itemName),
+						type);
+				}
+				catch (System.Exception e)
+				{
+					cmdlet.ThrowTerminatingError(
+						new ErrorRecord(
+							new PSInvalidOperationException(
+								$"The symbolic link at '{itemPath}' pointing to '{System.IO.Path.Combine(globalProfilePath, itemName)}' could not be created! Details:\n{e.Message}"),
+								"1",
+								ErrorCategory.InvalidOperation,
+								null));
+				}
 			}
 		}
 
@@ -312,22 +291,21 @@ namespace FactorioProfiles
 				}
 			}
 
-			// Validate that the path of this profile exists, as a sanity check.
-			if (!System.IO.Directory.Exists(Path))
+			// Create the symlink.
+			try
+			{
+				CreateSymbolicLink(factorioAppdataPath, Path, SymlinkType.Directory);
+			}
+			catch (System.Exception e)
 			{
 				cmdlet.ThrowTerminatingError(
 					new ErrorRecord(
 						new PSInvalidOperationException(
-							$"Could not find the profile path at '{Path}'!"),
+							$"The symbolic link at '{factorioAppdataPath}' pointing to '{Path}' could not be created! Details:\n{e.Message}"),
 							"1",
 							ErrorCategory.InvalidOperation,
 							null));
 			}
-
-			// Create the symlink.
-			CreateSymbolicLink(factorioAppdataPath, Path, SymlinkType.Directory);
-
-			cmdlet.WriteObject("\u001b[32mSuccessfully switched profiles\u001b[0m");
 		}
 
 		public void Destroy(Cmdlet cmdlet)

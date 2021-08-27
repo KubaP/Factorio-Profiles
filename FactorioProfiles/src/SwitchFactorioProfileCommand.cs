@@ -40,8 +40,23 @@ namespace FactorioProfiles
 						null));
 			}
 
+			var profile = Data.GetProfile(Name);
+
+			// Validate that the profile folder exists.
+			if (!System.IO.Directory.Exists(profile.Path))
+			{
+				ThrowTerminatingError(
+					new ErrorRecord(
+						new PSInvalidOperationException($"The profile folder at '{profile.Path}' could not be located!"),
+						"1",
+						ErrorCategory.InvalidData,
+						null));
+			}
+
 			// Switch to the profile.
-			Data.GetProfile(Name).Switch(this);
+			profile.Switch(this);
+
+			WriteObject("\u001b[32mSuccessfully switched profiles\u001b[0m");
 		}
 
 		// END Block - Runs at the end of this cmdlet.
