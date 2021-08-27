@@ -3,12 +3,12 @@ $script:ModuleRoot = $PSScriptRoot
 $script:ModuleVersion = (Import-PowerShellDataFile -Path "$ModuleRoot\FactorioProfiles.psd1").ModuleVersion
 $script:Folder = "$env:APPDATA\Powershell\FactorioProfiles"
 $script:DataPath = "$env:APPDATA\Powershell\FactorioProfiles\database.xml"
+# NOTE: These variables are redefined in the C# 'Data' class for use in native code.
+# There technically exists a way to access these variables from within the c# code:
+#    this.MyInvocation.MyCommand.Module.SessionState.PSVariable.GetValue("DataPath");
+# This must be done within a class which inherits from 'PSCmdlet' rather than just 'Cmdlet'.
 
-# FIXME: Temporary way to load a module. Figure out how to load .dll depending on testing or packaged status.
-Import-Module "$script:ModuleRoot\bin\Debug\netstandard2.0\FactorioProfiles.dll"
-
-# For the debug output to be displayed, $DebugPreference must be set
-# to 'Continue' within the current session.
+# For the debug output to be displayed, '$DebugPreference' must be set to 'Continue' within the current session.
 Write-Debug "`e[4mMODULE-WIDE VARIABLES`e[0m"
 Write-Debug "Module root folder: $ModuleRoot"
 Write-Debug "Module version: $ModuleVersion"
@@ -26,11 +26,7 @@ if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles" -E
 	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles" -Name "Profiles" -Force `
 		-ErrorAction Stop
 }
-if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Default" -ErrorAction Ignore)) {
-	# MAYBE: Is this actually necessary ???
-	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles" -Name "Default" `
-		-Force -ErrorAction Stop
-}
+
 if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Global" -ErrorAction Ignore)) {
 	# Create the folder which will contain the "global" factorio profile.
 	New-Item -ItemType Directory -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles" -Name "Global" `
@@ -48,167 +44,27 @@ if (-not (Test-Path -Path "$env:APPDATA\Powershell\FactorioProfiles\Profiles\Glo
 		-Name "blueprint-storage.dat" -Force -ErrorAction Stop	
 }
 
-# Potentially force this module script to dot-source the files, rather than 
-# load them in an alternative method.
-$doDotSource = $global:ModuleDebugDotSource
-$doDotSource = $true # Needed to make code coverage tests work
-
-function Resolve-Path_i {
-	<#
-	.SYNOPSIS
-		Resolves a path, gracefully handling a non-existent path.
-		
-	.DESCRIPTION
-		Resolves a path into the full path. If the path is invalid,
-		an empty string will be returned instead.
-		
-	.PARAMETER Path
-		The path to resolve.
-		
-	.EXAMPLE
-		PS C:\> Resolve-Path_i -Path "~\Desktop"
-		
-		Returns 'C:\Users\...\Desktop"
-
-	#>
-	[CmdletBinding()]
-	Param
-	(
-		[Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-		[string]
-		$Path
-	)
-	
-	# Run the command, silencing errors.
-	$resolvedPath = Resolve-Path -Path $Path -ErrorAction Ignore
-	
-	# If NULL, then just return an empty string.
-	if ($null -eq $resolvedPath) {
-		$resolvedPath = ""
-	}
-	
-	Write-Output $resolvedPath
-}
-function Import-ModuleFile {
-	<#
-	.SYNOPSIS
-		Loads files into the module on module import.
-		Only used in the project development environment.
-		In built module, compiled code is within this module file.
-		
-	.DESCRIPTION
-		This helper function is used during module initialization.
-		It should always be dot-sourced itself, in order to properly function.
-		
-	.PARAMETER Path
-		The path to the file to load.
-		
-	.EXAMPLE
-		PS C:\> . Import-ModuleFile -File $function.FullName
-		
-		Imports the code stored in the file $function according to import policy.
-		
-	#>
-	[CmdletBinding()]
-	Param
-	(
-		[Parameter(Mandatory = $true, Position = 0)]
-		[string]
-		$Path
-	)
-	
-	# Get the resolved path to avoid any cross-OS issues.
-	$resolvedPath = $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath($Path).ProviderPath
-	
-	if ($doDotSource) {
-		# Load the file through dot-sourcing.
-		. $resolvedPath	
-		Write-Debug "Dot-sourcing file: $resolvedPath"
-	}
-	else {
-		# Load the file through different method (unknown atm?).
-		$ExecutionContext.InvokeCommand.InvokeScript($false, ([scriptblock]::Create([io.file]::ReadAllText($resolvedPath))), $null, $null) 
-		Write-Debug "Importing file: $resolvedPath"
-	}
-}
-
-# ISSUE WITH BUILT MODULE FILE
-# ----------------------------
-# If this module file contains the compiled code below, as this is a "packaged"
-# build, then that code *must* be loaded, and you cannot individually import
-# and of the code files, even if they are there.
-# 
-# 
-# If this module file is built, then it contains the class definitions below,
-# and on Import-Module, this file is AST analysed and those class definitions 
-# are read-in and loaded.
-# 
-# It's only once a command is run that this module file is executed, and if at
-# that point this file starts to individually import the project files, it will
-# end up re-defining the classes, and apparently that seems to cause issues 
-# later down the line.
-# 
-# 
-# Therefore to prevent this issue, if this module file has been built and it
-# contains the compile code below, that code will be used, and nothing else.
-# 
-# The build script should also not package the individual files, so that the
-# *only* possibility is to load the compiled code below and there is no way
-# the individual files can be imported, as they don't exist.
-
-
-# If this module file contains the compiled code, import that, but if it
-# doesn't, then import the individual files instead.
-$importIndividualFiles = $false
+# The "<was not built>" string will be replaced by the build script to "<was built>".
+# However, the one with the (') quotes will not, which makes this logic work.
 if ("<was not built>" -eq '<was not built>') {
-	$importIndividualFiles = $true
-	Write-Debug "Module not built! Importing individual files."
-}
-
-Write-Debug "`e[4mIMPORT DECISION`e[0m"
-Write-Debug "Dot-sourcing: $doDotSource"
-Write-Debug "Importing individual files: $importIndividualFiles"
-
-# If importing code as individual files, perform the importing.
-# Otherwise, the compiled code below will be loaded.
-if ($importIndividualFiles) {
-	Write-Debug "!IMPORTING INDIVIDUAL FILES!"
-	
-	# Execute Pre-import actions.
-	. Import-ModuleFile -Path "$ModuleRoot\internal\preimport.ps1"
-	
-	# Import all internal functions.
-	foreach ($file in (Get-ChildItem "$ModuleRoot\internal\functions" -Filter "*.ps1" -Recurse -ErrorAction Ignore)) {
-		. Import-ModuleFile -Path $file.FullName
-	}
-	
-	# Import all public functions.
-	foreach ($file in (Get-ChildItem "$ModuleRoot\functions" -Filter "*.ps1" -Recurse -ErrorAction Ignore)) {	
-		. Import-ModuleFile -Path $file.FullName
-	}
-	
-	# Execute Post-import actions.
-	. Import-ModuleFile -Path "$ModuleRoot\internal\postimport.ps1"
-	
-	# End execution here, do not load compiled code below (if there is any).
-	return
+	# This module is not the built package; it's part of the development tree.
+	Write-Debug "Importing debug .dll"
+	Import-Module "$script:ModuleRoot\bin\Debug\netstandard2.0\FactorioProfiles.dll"
 }
 else {
-	Write-Debug "!LOADING COMPILED CODE!"
-
-	#region Load compiled code
-	"<compile code into here>"
-	#endregion Load compiled code
+	# This module has been built.
+	Write-Debug "Importing release .dll"
+	Import-Module "$script:ModuleRoot\bin\FactorioProfiles.dll"
 }
 
 # DATA MIGRATION (Example)
 # -----------------------
 <#
 Write-Debug "Checking for databse migration"
-$databaseVersion = [Regex]::Match((Get-Item -Path "$Folder\database.*.xml" -ErrorAction Ignore), ".*?<FactorioProfiles>\\database.(.*).xml").Groups[1].Value
-if ($databaseVersion -eq "0.1.0")
-{
+$databaseVersion = [Regex]::Match((Get-Item -Path "$Folder\database.*.xml" -ErrorAction Ignore), ".*?FactorioProfiles\\database.(.*).xml").Groups[1].Value
+if ($databaseVersion -eq "0.1.0") {
 	Write-Debug "`e[4mDetected database version 0.1.0!`e[0m"
 	Rename-Item -Path "$Folder\database.0.1.0.xml" -NewName "database.0.2.0.xml" -Force -WhatIf:$false -Confirm:$false | Out-Null
+	# Perform the actual migration of content.
 }
 #>
