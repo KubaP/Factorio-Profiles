@@ -27,6 +27,7 @@
             "type": "shell",
             "args": [
                 "build",
+                // Build a 'Release' binary.
                 "--configuration",
                 "Release",
                 "${workspaceFolder}/FactorioProfiles",
