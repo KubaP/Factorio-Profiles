@@ -53,7 +53,8 @@
 		'Get-FactorioProfileSettings',
 		'Set-FactorioProfileOption',
 		'Remove-FactorioProfile',
-		'Switch-FactorioProfile'
+		'Switch-FactorioProfile',
+		'Open-FactorioProfileFolder'
 	)
 	
 	# Variables to export from this module
