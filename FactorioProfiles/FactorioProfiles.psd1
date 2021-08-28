@@ -1,4 +1,4 @@
-﻿@{
+@{
 	# Script module or binary module file associated with this manifest
 	RootModule = 'FactorioProfiles.psm1'
 	
@@ -15,7 +15,7 @@
 	CompanyName = ' '
 	
 	# Copyright statement for this module
-	Copyright = 'Copyright (c) 2021 KubaP'
+	Copyright = 'Copyright (c) __CURRENT_YEAR__ KubaP'
 	
 	# Description of the functionality provided by this module
 	Description = 'A set of commands for easily managing & switching between different factorio profiles, (sets of saves, mods, configurations, etc).'

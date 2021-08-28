@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 	Builds the source code into a module package.
 	
@@ -57,7 +57,7 @@ param
 
 	[string]
 	$WorkingDirectory,
-	
+
 	[switch]
 	$SkipPublish,
 	
@@ -111,13 +111,17 @@ Copy-Item -Path "$WorkingDirectory\FactorioProfiles\*" -Destination "$($publishD
 Copy-Item -Path "$WorkingDirectory\FactorioProfiles\bin\Release\netstandard2.0\FactorioProfiles.dll" `
 	-Destination "$($publishDir.FullName)\FactorioProfiles\bin" -Force -Verbose
 
-# Modify a string in the .psm1 file to tell it that it is a packaged release, and to load the
+# Modify a string in the .psm1 file to tell it that it is a packaged release, and to load the 
 # binary .dll from the correct directory.
 Write-Header -Message "Updating & Replacing text" -Colour Cyan
 $fileData = Get-Content -Path "$($publishDir.FullName)\FactorioProfiles\FactorioProfiles.psm1" -Raw
 $fileData = $fileData.Replace('"<was not built>"', '"<was built>"')
 [System.IO.File]::WriteAllText("$($publishDir.FullName)\FactorioProfiles\FactorioProfiles.psm1", $fileData, [System.Text.Encoding]::UTF8)
 
+# Insert the current year into the module manifest.
+$fileData = Get-Content -Path "$($publishDir.FullName)\FactorioProfiles\FactorioProfiles.psd1" -Raw
+$fileData = $fileData.Replace("__CURRENT_YEAR__", "$((Get-Date).Year)")
+[System.IO.File]::WriteAllText("$($publishDir.FullName)\FactorioProfiles\FactorioProfiles.psd1", $fileData, [System.Text.Encoding]::UTF8)
 
 if (-not $SkipPublish) {
 	if ($Repository -eq "TESTING") {
