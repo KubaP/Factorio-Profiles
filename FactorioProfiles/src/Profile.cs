@@ -100,7 +100,9 @@ namespace FactorioProfiles
 			// Get the leaf of the path, i.e. the path of the parent folder containing the profile.
 			var parentPath = new System.IO.DirectoryInfo(Path).Parent.ToString();
 			// Then combine the parent directory with the new name of the profile.
-			var newPath = System.IO.Path.Combine(parentPath, newName);
+			// Just like in the 'New-FactorioProfile' cmdlet, sanitise the name of the profile.
+			// Since the name will make up the name of a folder, it cannot contain certain characters.
+			var newPath = System.IO.Path.Combine(parentPath, Sanitise.FolderName(newName));
 
 			MoveFolder(newPath, cmdlet);
 

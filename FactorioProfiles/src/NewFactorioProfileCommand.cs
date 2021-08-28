@@ -115,7 +115,9 @@ namespace FactorioProfiles
 				Path = Data.GetNewProfileSavePath();
 				// Append the name of the profile to the path. This is only done for the default case.
 				// If the user has specified a path, the leaf is the folder containing the profile contents.
-				Path = System.IO.Path.Combine(Path, Name);
+				// Sanitise the name of the profile, since it will be used as the *name* of the folder,
+				// and folder/file names have a few illegal characters.
+				Path = System.IO.Path.Combine(Path, Sanitise.FolderName(Name));
 			}
 
 			// Expand any environment variables.
