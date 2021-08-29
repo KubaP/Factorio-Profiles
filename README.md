@@ -7,19 +7,10 @@
 <br>
 
 <p align="center">
-<!-- 
-[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/ProgramManager?logo=powershell&logoColor=white)](https://www.powershellgallery.com/packages/<ModuleName>)
-/\ Replace this one with a shields.io badge. Go to 'Version' -> 'Powershell Gallery (inc. pre-release)'
-    Fill out package name
-    logo = 'powershell'
-    logoColour = 'white'
-![PowerShell Gallery Platform](https://img.shields.io/powershellgallery/p/ProgramManager?logo=windows)
-/\ Replace this one with a shields.io badge. Go to 'Platform Support' -> 'Powershell Gallery'
-    Fill out package name
-    logo = 'windows'
-    logoColour = 'white'
--->
-
+<a href="https://www.powershellgallery.com/packages/FactorioProfiles">
+    <img src="https://img.shields.io/powershellgallery/v/FactorioProfiles?logo=powershell&logoColor=white">
+</a>
+<img src="https://img.shields.io/powershellgallery/p/FactorioProfiles">
 <a href="./LICENSE">
     <img src="https://img.shields.io/badge/license-GPLv3-blue">
 </a>
