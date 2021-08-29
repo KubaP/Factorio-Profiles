@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build debug",
+            "program": "pwsh",
+            "args": [
+                // Don't close the terminal window on finish.
+                "-NoExit",
+                "-Command",
+                // Include the '-Force' switch to overwrite the module if it's already loaded.
+                // This could happen if a previous published version of the module in development
+                // exists in the pwsh module folder, and it is automatically loaded.
+                "Import-Module ${workspaceFolder}\\FactorioProfiles\\FactorioProfiles.psd1 -Force",
+            ],
+            "cwd": "${workspaceFolder}",
+            // Allow stepping into library code.
+            "justMyCode": false,
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}

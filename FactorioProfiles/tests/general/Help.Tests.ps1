@@ -17,7 +17,7 @@
     These paths are used to search for commands that should exist and be tested.
     Will search recursively and accepts wildcards, make sure only functions are found
 
-.PARAMETER ModuleName
+.PARAMETER FactorioProfiles
     Name of the module to be tested.
     The module must already be imported
 
@@ -41,7 +41,7 @@ Param (
 	$CommandPath = @("$PSScriptRoot\..\..\functions", "$PSScriptRoot\..\..\internal\functions"),
 	
 	[string]
-    $ModuleName = "<MODULENAME>",	
+    $FactorioProfiles = "<FactorioProfiles>",	
     
 	[string]
     $ExceptionsFile = "$PSScriptRoot\Help.Exceptions.ps1"
@@ -56,7 +56,7 @@ if ($SkipTest) { return }
 # Get all files to be tested
 $includedNames = (Get-ChildItem $CommandPath -Recurse -File | Where-Object Name -like "*.ps1").BaseName
 # Get all command within the module
-$commands = Get-Command -Module (Get-Module $ModuleName) -CommandType Cmdlet, Function | Where-Object Name -in $includedNames
+$commands = Get-Command -Module (Get-Module $FactorioProfiles) -CommandType Cmdlet, Function | Where-Object Name -in $includedNames
 
 ## When testing help, remember that help is cached at the beginning of each session.
 ## To test, restart session.

@@ -1,28 +1,13 @@
-# <MODULENAME>
-Module description..., different from the one used in the module manifest. (That one goes in the github project description field).
-
-Who this module is aimed at...
+<picture align="center">
+    <source srcset="img/logo_dark.jpg" media="(prefers-color-scheme: dark)">
+    <img width="auto" src="img/logo.jpg">
+</picture>
 
 <br>
+<br>
 
-\/ \/ \/ Delete any unnecessary ones fully, otherwise a line break will appear.
-[![Azure DevOps builds](https://img.shields.io/azure-devops/build/KubaP999/3d9148d2-04d0-4835-b7cb-7bf89bdbf11b/7?label=latest%20build&logo=azure-pipelines)](https://dev.azure.com/KubaP999/ProgramManager/_build/latest?definitionId=7&branchName=development)
-/\ Replace this one with a shields.io badge. Go to 'Build -> Azure DevOps Builds'
-    Fill out organisation/project/id values for the dev-ci pipeline
-    Style = 'flat'
-    label = 'latest'
-    logo = 'azure-pipelines'
-    logoColour = 'white'
-    
-   Turn the badge into a link by surrounding it in [] brackets, and then adding a (..) link afterwards which points to the azure dev ci pipeline page.
-[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/KubaP999/ProgramManager/7?logo=codecov&logoColor=white)](https://dev.azure.com/KubaP999/ProgramManager/_build/latest?definitionId=7&branchName=development)
-/\ Replace this one with a shields.io badge. Go to 'Code Coverage' -> 'Azure Code Coverage'
-    Fill out organisation/project/id values for the dev-ci pipeline
-    Style = 'flat'
-    logo = 'codecov'
-    logoColour = 'white'
-    
-   Turn the badge into a link by surrounding it in [] brackets, and then adding a (...) link afterwards which points to the azure dev ci pipeline page.
+<p align="center">
+<!-- 
 [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/ProgramManager?logo=powershell&logoColor=white)](https://www.powershellgallery.com/packages/<ModuleName>)
 /\ Replace this one with a shields.io badge. Go to 'Version' -> 'Powershell Gallery (inc. pre-release)'
     Fill out package name
@@ -33,111 +18,122 @@ Who this module is aimed at...
     Fill out package name
     logo = 'windows'
     logoColour = 'white'
-[![License](https://img.shields.io/badge/license-GPLv3-blue)](./LICENSE)
+-->
+
+<a href="./LICENSE">
+    <img src="https://img.shields.io/badge/license-GPLv3-blue">
+</a>
+</p>
+
+<br>
+
+Factorio-Profiles is a module designed to help manage multiple factorio profiles, by providing a set of simple and self-explanatory cmdlets to use inside of powershell.
+
+This module is aimed at anyone who has multiple factorio instances they play with, but still wants to play the game through steam rather than manually keeping track of many portable factorio installations.
 
 ### Table of Contents
 1. [Getting Started](#getting-started)
 2. [Information & Features](#information--features)
-3. [Build Instructions](#build-instructions)
-4. [Support](#support)
-5. [Contributing](#contributing)
-6. [License](#license)
+3. [FAQ](#faq)
+4. [Build Instructions](#build-instructions)
+5. [Support](#support)
+6. [Contributing](#contributing)
+7. [License](#license)
 
 ## Getting Started
 ### Installation
-In order to get started with the latest version, simply download the module from the [PSGallery](https://www.powershellgallery.com/packages/<ModuleName>), or install it from powershell by running:
+In order to get started with the latest version, simply download the module from the [PSGallery](https://www.powershellgallery.com/packages/FactorioProfiles), or install it from powershell by running:
 ```powershell
-Install-Module <ModuleName>
+Install-Module FactorioProfiles
 ```
-Installing this module does not mean that it is loaded automatically on start-up. Powershell supports loading modules on-the-fly since v3, however the first time you run a command it can be a bit slow to tab-complete parameters or values. If you would like to load this module on shell start-up, add the following line to `~\Documents\Powershell\Profile.ps1`:
-```powershell
-Import-Module <ModuleName>
-```
+Alternatively, download the `.zip` package from the [Releases](https://github.com/KubaP/Factorio-Profiles/releases) page, extract the contents, and copy over the `FactorioProfiles` folder to either:
+- `~\Documents\Powershell\Modules` if you're using `pwsh >= 6.0`, or
+- `~\Documents\WindowsPowershell\Modules` if you're using `Windows Powershell 5.1`
 
 ### Requirements
-This module requires minimum `Powershell 6`.
+This module requires minimum `Powershell 5.1`.
 
-[This module works on **Windows** only.]
-|
-[This module works on `Windows`, `MacOS`, and `Linux`.]
+This module works on **Windows** only, due to the windows-specific symbolic-link creation.
 
-⚠Whilst there are no platform-specific features in use, this module has not yet been tested on either `macOS` or `Linux` so there are no guarantees it will work 100% of the time.
+### Creating a new Profile
+To create a new profile, simply run:
+```powershell
+New-FactorioProfile -Name <PROFILE_NAME>
+```
+This will create a new profile at the default location.
 
-### Creating a new ...
-Usage instructions/overview of commands taken from the about file.
-...
-[⚠This module has a complex feature-set. Please read the `help pages`.]
+### Editing the contents of a Profile
+To copy over existing mod/save files, modify the profile's contents, or do anything else, run:
+```powershell
+Open-FactorioProfileFolder -Name <PROFILE_NAME>
+```
+This will open `explorer.exe` at the profile folder.
+
+### Switching to a Profile
+To active a profile, run:
+```powershell
+Switch-FactorioProfile -Name <PROFILE_NAME>
+```
+This will switch to the specified profile. You can now launch the game through Steam or a standalone installation and this profile will be in use.
+
+⚠It may be a good idea to disable the *Steam Cloud Sync* feature for the game if you are launching it through Steam.
+
 
 ## Information & Features
 ### Documentation
 For a detailed rundown and explanation of all the features in this module, view the **help page** by running:
 ```powershell
-Get-Help about_<MODULENAME>
+Get-Help about_FactorioProfiles
 ```
-For detailed help about a specific command, run:
+<!-- For detailed help about a specific cmdlet, run:
 ```powershell
 Get-Help <COMMAND NAME> -Full
-```
+``` -->
 
 ### Extra features
-#### Aliases
-The cmdlets in this module have default aliases:
-|Cmdlet 	     |Alias|
-|----------------|-----|
-|New-<OBJECT>    | n.. |
-|Get-<OBJECT>    | g.. |
-|Set-<OBJECT>    | s.. |
-|Remove-<OBJECT> | r.. |
 
 #### Tab completion
-The `...`[/`...s`] parameter supports tab-completion of valid **existing** <OBJECT> [or <OBJECT>] names in the following cmdlets:
-- `...`
-- `...`
-- `...`
-- `...`
+The `Name`/`Names` parameter supports tab-completion of **existing** `Profile` names in the following cmdlets:
+- `Get-FactorioProfile`
+- `Set-FactorioProfileOption`
+- `Remove-FactorioProfile`
+- `Switch-FactorioProfile`
+- `Open-FactorioProfileFolder`
 
-#### Custom scriptblock evaluation
-When creating a new <OBJECT>, you can pass in a scriptblock which will evaluate...
-
-[For details, see `about_<MODULENAME>_scriptblocks`.]
-|
-[For details, see the `...` section in the help at: `about_<MODULENAME>`.]
-
-#### -WhatIf and -Confirm support
-The following cmdlets support `-WhatIf` and `-Confirm` parameters:
-- `...`
-- `...`
-- `...`
-
-Use `-WhatIf` to see and list what changes a cmdlet will do.
-
-Use `-Confirm` to ask for a prompt for every state-altering change.
+#### Prompt support
+The cmdlets do not support the `-WhatIf` nor the `-Confirm` switches. However, if any ambiguous or dangerous operation arise, a prompt will be displayed asking for user input.
 
 #### Formatting
-The `[<OBJECT>]` [and `[<OBJECT>]`] object[s] within this module has custom formatting rules for all views. Simply pipe the output of the `Get-<OBJECT>` cmdlet to one of:
+The `Profile` object within this module has custom formatting rules for all views. Simply pipe the output of the `Get-FactorioProfile` cmdlet to one of:
 | Cmdlet        | Alias |
-|---------------|-------|
-| Format-List   |  fl   |
-| Format-Table  |  ft   |
-| Format-Custom |  fc   |
-| Format-Wide   |  fw   |
+| ------------- | ----- |
+| Format-List   | fl    |
+| Format-Table  | ft    |
+| Format-Custom | fc    |
+| Format-Wide   | fw    |
 
-The `Format-Custom` & `Format-List` views contain the largest amount of information regarding the <OBJECT>.
+The `Format-Custom` & `Format-List` views contain the largest amount of information regarding a `Profile`.
 
-⚠This module supports `Fancy` formatting (using colours and emoijs) for enhanced readability. This *only* works within the **Windows Terminal** at the moment (I've not tested this on other terminal emulators, but if you know that they support these extra features then let me know). The example below shows the enhanced formatting.
+## FAQ
+**Q**. Why not just have multiple independent portable factorio installations?
 
-![Example](./example.png)
+**A**. Portable factorio installations will not run through Steam. This is an issue if you like or rely on features Steam provides. Plus, even with portable installations, you would have to manually link files if you wanted to share "things" across multiple installations, such as sharing the config file.
+
+**Q**. If running through Steam is so important, why not just modify the `--config` and `--mod-directory` launch parameters?
+
+**A**. That requires manual editing each time you want to change the values, plus, there is no way to separate saves, scenarios, or other "things" in a factorio profile; only the configuration file and mods.
 
 ## Build Instructions
 #### Prerequisites
 Install the following:
-- Powershell Core 7.0.0+
+- Powershell 5.1+
+- dotnet 5.0+
 - Pester **4.10.1**
 - PSScriptAnalyzer 1.18.0+
 
 #### Clone the git repo
-```
-git clone https://github.com/KubaP/Powershell-<MODULENAME>.git
+```bash
+git clone https://github.com/KubaP/Factorio-Profiles.git
 ```
 
 #### Run the build scripts
@@ -151,9 +147,12 @@ Navigate to the root repository folder and run the following commands:
 The built module will be located in the `.\publish` folder.
 
 ## Support
-⚠If you need help regarding the usage of the module, please see the **help page** by running `Get-Help about_<MODULENAME>`.
+⚠If you need help regarding the usage of the module, please **first see the help page** by running:
+```powershell
+Get-Help about_FactorioProfiles
+```
 
-If there is a bug/issue, please file it on the github issue tracker.
+If something is still unclear, or there is a bug or problem, please create a new **Github Issue**.
 
 ## Contributing
 If you have a suggestion, create a new **Github Issue** detailing the idea.
@@ -161,7 +160,4 @@ If you have a suggestion, create a new **Github Issue** detailing the idea.
 Feel free to make pull requests if you have an improvement. Only submit a single feature at a time, and make sure that the code is cleanly formatted, readable, and well commented.
 
 ## License 
-This project is licensed under the GPLv3 license - see [LICENSE.md](./LICENSE) file for details.
-
-### Acknowledgements
-Any acknowledgements...?
+This project is licensed under the **GPLv3** license - see [.\LICENSE](./LICENSE) for details.

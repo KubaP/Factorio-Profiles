@@ -1,19 +1,21 @@
 ﻿
 # ignore the settings folder and files for VSCode and PSS
-.vscode/*
 *.psproj
 *TempPoint*
 
+bin/
+obj/
+
 # Ignore staging info from Visual Studio
-library/<MODULENAME>/.vs/*
-library/<MODULENAME>/<MODULENAME>/bin/*
-library/<MODULENAME>/<MODULENAME>/obj/*
+library/FactorioProfiles/.vs/*
+library/FactorioProfiles/FactorioProfiles/bin/*
+library/FactorioProfiles/FactorioProfiles/obj/*
 
 # ignore PowerShell Studio MetaData
-<MODULENAME>/<MODULENAME>.psproj
-<MODULENAME>/<MODULENAME>.psproj.bak
-<MODULENAME>/<MODULENAME>.psprojs
-<MODULENAME>/<MODULENAME>.psproj
+FactorioProfiles/FactorioProfiles.psproj
+FactorioProfiles/FactorioProfiles.psproj.bak
+FactorioProfiles/FactorioProfiles.psprojs
+FactorioProfiles/FactorioProfiles.psproj
 
 # ignore the TestResults
 TestResults/*
