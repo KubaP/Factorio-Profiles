@@ -1,1 +1,0 @@
-﻿Copy about_page from one of the existing modules.

@@ -1,0 +1,259 @@
+﻿TOPIC
+    about_FactorioProfiles
+
+
+
+SHORT DESCRIPTION
+    Explains how the FactorioProfiles module can be used to manage multiple
+    Factorio profiles.
+
+
+
+OVERVIEW
+ == This module manages multiple Factorio profiles. A Factorio profile can be
+    described as a set of configuration files, mods, saves, and other items
+    which the game loads in at runtime, and which contain user-created content.
+
+    An example use of this module would be to have a separate profile for
+    'vanilla', 'a multiplayer game with certain mods', and a 'modded save'.
+    These three profiles can share the config file, so that the keybinds and
+    game settings remain the same across all profiles. However, they have
+    separate mod and save folders since the profiles are incompatible with 
+    each other.
+
+
+ == This module has custom-defined formatting outputs for:
+        -------	        -----
+        Cmdlet	        Alias
+        -------         -----
+        Format-List     fl
+        Format-Table    ft
+        Format-Custom   fc
+        Format-Wide     fw
+    
+    The 'Format-Custom' & 'Format-List' views contain the largest amount
+    of information regarding the symlink.
+
+
+ == The module has the following default settings
+    New profiles default being created at:
+        '%APPDATA%\Powershell\FactorioProfiles\Profiles'
+    New profiles don't share anything globally.
+
+    These settings can be modified with the 'Set-FactorioProfileOption' cmdlet.
+
+
+
+HOW IT WORKS
+ == A Steam or standalone installation of the game stores it's data in the
+    '%APPDATA%\Factorio' folder. What this module does is store the data in
+    separate folders elsewhere on the filesystem, and then creating a
+    symbolic link pointing to these folders.
+
+    Example:
+        %APPDATA%\Factorio -> D:\my\modded\factorio\profile
+
+    The creation of this symbolic link is done through the
+    'Switch-FactorioProfile' cmdlet, which will link to the given profile.
+
+
+
+CREATING A PROFILE
+ == To create a new profile, run:
+    
+        PS C:\> New-FactorioProfile -Name "modded"
+    
+    This command will create a new profile with the name "modded", and it will
+    be created in the default profile location.
+
+    -Name
+        Specifies the name of the profile; must be unique.
+    
+    OPTIONAL PARAMETERS
+    
+    -Path
+        Specifies the path at which to create the profile folder, overriding
+        the default path. If any parent folders don't exist, they will be
+        created during the execution.
+    
+    -ShareConfig (Accepted values: "true", "false")
+        Specifies that this profile will share it's configuration file globally.
+    
+    -ShareMods (Accepted values: "true", "false")
+        Specifies that this profile will share it's mods folder content
+        globally.
+    
+    -ShareSaves (Accepted values: "true", "false")
+        Specifies that this profile will share it's save folder content
+        globally.
+    
+    -ShareScenarios (Accepted values: "true", "false")
+        Specifies that this profile will share it's scenarios folder content
+        globally.
+    
+    -ShareBlueprints (Accepted values: "true", "false")
+        Specifies that this profile will share it's blueprint data file
+        globally.
+
+
+
+RETRIEVING A PROFILE
+ == To retrieve the details of a profile, run:
+    
+        PS C:\> Get-FactorioProfile -Name "modded"
+    
+    This command will retrieve the details of the profile named "modded", and
+    print the information to the screen.
+    
+    -Names
+        Specifies the name(s) of the profiles to retrieve.
+        Leaving this value blank will retrieve *all* profiles.
+     [!]This parameter has tab-completion support.
+
+
+
+RETRIEVING THE MODULE SETTINGS
+ == To retrieve the global settings for this module, run:
+    
+        PS C:\> Get-FactorioProfileSettings
+    
+    This command will retrieve the module settings, and print them to
+    the screen.
+
+
+
+CHANGING THE OPTIONS OF A PROFILE
+ == To modify a profile, run:
+    
+        PS C:\> Set-FactorioProfileOption -Profile "modded" -...
+    
+    This command will modify the "modded" profile.
+
+    -Profile
+        Specifies the name of the profile to modify.
+     [!]This parameter has tab-completion support.
+    
+    OPTIONAL PARAMETERS
+
+    -NewName
+        Specifies the new name of the profile; must be unique.
+      [!]Renaming the profile will rename the profile folder as well.
+    
+    -NewPath
+        Specifies the new location of the profile; location must not be taken.
+
+    -ShareConfig (Accepted values: "true", "false")
+        Specifies that this profile will share it's configuration file globally.
+    
+    -ShareMods (Accepted values: "true", "false")
+        Specifies that this profile will share it's mods folder content
+        globally.
+    
+    -ShareSaves (Accepted values: "true", "false")
+        Specifies that this profile will share it's save folder content
+        globally.
+    
+    -ShareScenarios (Accepted values: "true", "false")
+        Specifies that this profile will share it's scenarios folder content
+        globally.
+    
+    -ShareBlueprints (Accepted values: "true", "false")
+        Specifies that this profile will share it's blueprint data file
+        globally.
+
+ [!]Changing any of the "sharing" options will perform the following action:
+    - If the profile is current not sharing but will now share,
+      The current profile item *will be deleted*, and then the item will be
+      shared.
+    - If the profile is current sharing but will now not share,
+      The item will stop being shared, and a new empty item will be created.
+    
+
+ == To modify the global settings for this module, run:
+    
+        PS C:\> Set-FactorioProfileOption -Module -...
+
+    -Module
+        Specifies that the cmdlet will modify the global settings.
+    
+    OPTIONAL PARAMETERS
+
+    -DefaultPathForNewProfiles
+        Specifies the path at which, by default, new profiles will be created.
+
+    -ShareConfigByDefault (Accepted values: "true", "false")
+        Specifies that by default, a new profile will share it's configuration
+        file globally.
+    
+    -ShareModsByDefault (Accepted values: "true", "false")
+        Specifies that by default, a new profile will share it's mods folder
+        content globally.
+    
+    -ShareSavesByDefault (Accepted values: "true", "false")
+        Specifies that by default, a new profile will share it's save folder
+        content globally.
+    
+    -ShareScenariosByDefault (Accepted values: "true", "false")
+        Specifies that by default, a new profile will share it's scenarios
+        folder content globally.
+    
+    -ShareBlueprintsByDefault (Accepted values: "true", "false")
+        Specifies that by default, a new profile will share it's blueprint
+        data file globally.	
+
+
+
+SWITCHING TO A PROFILE
+ == To switch Factorio to a profile, run:
+    
+        PS C:\> Switch-FactorioProfile -Name "modded"
+    
+    This command will make the profile named "modded" become the currently
+    active Factorio profile. Once this command has finished execution, you
+    can start Factorio up, whether through Steam or otherwise.
+
+    -Name
+        Specifies the name of the profile to switch to.
+     [!]This parameter has tab-completion support.
+
+
+
+OPENING A PROFILE FOLDER
+ == To open the folder of a profile in the file explorer, run:
+    
+        PS C:\> Open-FactorioProfileFolder -Name "modded"
+    
+    This command will open explorer.exe at the location of the profile folder
+    for the "modded" profile.
+
+    -Name
+        Specifies the name of the profile to open.
+     [!]This parameter has tab-completion support.
+
+
+
+REMOVING A PROFILE
+ == To retrieve the details of a profile, run:
+    
+        PS C:\> Remove-FactorioProfile -Name "modded"
+    
+    This command will remove the profile named "modded", including deleting
+    the profile folder from disk.
+    
+    -Name
+        Specifies the name of the profile to remove.
+     [!]This parameter has tab-completion support.
+
+
+
+OTHER
+ == This module stores all data in the '%APPDATA%\Powershell\FactorioProfiles'
+    folder. It is advised to **not** manually modify the database file as it
+    could have unintended consequences.
+
+
+
+KEYWORDS
+    Game
+    Factorio
+    Management
