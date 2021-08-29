@@ -48,35 +48,35 @@ namespace FactorioProfiles
 		[AllowNull]
 		public String ShareBlueprints { get; set; }
 
-		// Parameters for editing the general settings.
-		[Parameter(Position = 0, Mandatory = true, ParameterSetName = "General")]
-		public SwitchParameter GeneralSetting { get; set; }
+		// Parameters for editing the module global settings.
+		[Parameter(Position = 0, Mandatory = true, ParameterSetName = "Module")]
+		public SwitchParameter Module { get; set; }
 
-		[Parameter(Position = 1, ParameterSetName = "General")]
+		[Parameter(Position = 1, ParameterSetName = "Module")]
 		[AllowNull]
 		public String DefaultPathForNewProfiles { get; set; }
 
-		[Parameter(Position = 1, ParameterSetName = "General")]
+		[Parameter(Position = 1, ParameterSetName = "Module")]
 		[ValidateSet("true", "false")]
 		[AllowNull]
 		public String ShareConfigByDefault { get; set; }
 
-		[Parameter(Position = 1, ParameterSetName = "General")]
+		[Parameter(Position = 1, ParameterSetName = "Module")]
 		[ValidateSet("true", "false")]
 		[AllowNull]
 		public String ShareModsByDefault { get; set; }
 
-		[Parameter(Position = 1, ParameterSetName = "General")]
+		[Parameter(Position = 1, ParameterSetName = "Module")]
 		[ValidateSet("true", "false")]
 		[AllowNull]
 		public String ShareSavesByDefault { get; set; }
 
-		[Parameter(Position = 1, ParameterSetName = "General")]
+		[Parameter(Position = 1, ParameterSetName = "Module")]
 		[ValidateSet("true", "false")]
 		[AllowNull]
 		public String ShareScenariosByDefault { get; set; }
 
-		[Parameter(Position = 1, ParameterSetName = "General")]
+		[Parameter(Position = 1, ParameterSetName = "Module")]
 		[ValidateSet("true", "false")]
 		[AllowNull]
 		public String ShareBlueprintsByDefault { get; set; }
@@ -270,7 +270,7 @@ namespace FactorioProfiles
 					WriteObject("\u001b[32mSuccessfully modified the profile\u001b[0m");
 
 					break;
-				case "General":
+				case "Module":
 
 					if (!String.IsNullOrWhiteSpace(DefaultPathForNewProfiles))
 					{

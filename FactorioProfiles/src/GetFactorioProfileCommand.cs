@@ -10,8 +10,8 @@ namespace FactorioProfiles
 	{
 		[Parameter(Position = 0)]
 		[ArgumentCompleter(typeof(NameCompleter))]
-		[Alias("Profile", "Name", "Names")]
-		public String[] Profiles { get; set; }
+		[Alias("Name", "Profile", "Profiles")]
+		public String[] Names { get; set; }
 
 		// BEGIN Block - Runs at the beginning of this cmdlet.
 		protected override void BeginProcessing() { }
@@ -22,14 +22,14 @@ namespace FactorioProfiles
 			var profiles = new List<Profile>();
 
 			// If no name is provided, display all profiles.
-			if (Profiles == null)
+			if (Names == null)
 			{
 				profiles = Data.GetProfiles();
 			}
 			else
 			{
 				// Iterate through all the given in names, and try to retrieve the corresponding profile.
-				foreach (String name in Profiles)
+				foreach (String name in Names)
 				{
 					var profile = Data.GetProfile(name);
 					// If the profile doesn't exist, warn the user.

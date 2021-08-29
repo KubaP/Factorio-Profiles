@@ -9,6 +9,7 @@ namespace FactorioProfiles
 	{
 		[Parameter(Position = 0, Mandatory = true)]
 		[ArgumentCompleter(typeof(NameCompleter))]
+		[Alias("Profile")]
 		public String Name { get; set; }
 
 		// BEGIN Block - Runs at the beginning of this cmdlet.

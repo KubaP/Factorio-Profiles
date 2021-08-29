@@ -128,7 +128,7 @@ namespace FactorioProfiles
 			{
 				ThrowTerminatingError(
 					new ErrorRecord(
-						new PSInvalidOperationException($"The desired profile path '{Path}' already exists!"),
+						new PSInvalidOperationException($"The desired profile folder path '{Path}' already exists!"),
 						"1",
 						ErrorCategory.InvalidOperation,
 						null));
