@@ -1,8 +1,8 @@
-@{
+﻿@{
 	# Script module or binary module file associated with this manifest
 	RootModule = 'FactorioProfiles.psm1'
 	
-	# Version number of this module.
+	# Version number of this module
 	ModuleVersion = '0.1.0'
 	
 	# ID used to uniquely identify this module
@@ -20,15 +20,11 @@
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.1'
 	
-	# Modules that must be imported into the global environment prior to importing
-	# this module
-	<#!
-	RequiredModules = @(
-		@{ ModuleName='name'; ModuleVersion='1.0.0' }
-	)#>
+	# Modules that must be imported into the global environment prior to importing this module
+	# RequiredModules = @( @{ ModuleName='name'; ModuleVersion='1.0.0' } )
 
-	# Assemblies that are part of this module.
-	#NestedModules = @('bin\Debug\netstandard2.0\FactorioProfiles.dll')
+	# Assemblies that are part of this module
+	# NestedModules = @('bin\Debug\netstandard2.0\FactorioProfiles.dll')
 	
 	# Assemblies that must be loaded prior to importing this module
 	# RequiredAssemblies = @('bin\FactorioProfiles.dll')
@@ -40,8 +36,7 @@
 	FormatsToProcess = @('xml\FactorioProfiles.Format.ps1xml')
 	
 	# Functions to export from this module
-	FunctionsToExport = @(
-	)
+	# FunctionsToExport = @( )
 	
 	# Cmdlets to export from this module
 	CmdletsToExport = @(
@@ -66,22 +61,23 @@
 	# List of all files packaged with this module
 	FileList = @()
 	
-	# Private data to pass to the module specified in ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
+	# Private data to pass to the module specified in ModuleToProcess.
+	# This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 	PrivateData = @{
 		
-		#Support for PowerShellGet galleries.
+		# Support for PowerShellGet galleries
 		PSData = @{
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @("Windows", "Game", "PSEdition_Desktop", "PSEdition_Core")
 			
-			# A URL to the license for this module.
+			# A URL to the license for this module
 			LicenseUri = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 			
-			# A URL to the main website for this project.
+			# A URL to the main website for this project
 			ProjectUri = 'https://github.com/KubaP/Factorio-Profiles'
 			
-			# A URL to an icon representing this module.
+			# A URL to an icon representing this module
 			# IconUri = ''
 			
 			# ReleaseNotes of this module
