@@ -11,9 +11,6 @@
 	# Author of this module
 	Author = 'KubaP'
 	
-	# Company or vendor of this module
-	CompanyName = ' '
-	
 	# Copyright statement for this module
 	Copyright = 'Copyright (c) __CURRENT_YEAR__ KubaP'
 	
@@ -21,7 +18,7 @@
 	Description = 'A set of commands for easily managing & switching between different factorio profiles, (sets of saves, mods, configurations, etc).'
 	
 	# Minimum version of the Windows PowerShell engine required by this module
-	PowerShellVersion = '6.0'
+	PowerShellVersion = '5.1'
 	
 	# Modules that must be imported into the global environment prior to importing
 	# this module
@@ -76,7 +73,7 @@
 		PSData = @{
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags = @("Windows", "PSEdition_Core")
+			Tags = @("Windows", "Game", "PSEdition_Desktop", "PSEdition_Core")
 			
 			# A URL to the license for this module.
 			LicenseUri = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
