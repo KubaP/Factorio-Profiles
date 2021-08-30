@@ -10,7 +10,9 @@
 <a href="https://www.powershellgallery.com/packages/FactorioProfiles">
     <img src="https://img.shields.io/powershellgallery/v/FactorioProfiles?logo=powershell&logoColor=white">
 </a>
-<img src="https://img.shields.io/powershellgallery/p/FactorioProfiles">
+<a href="">
+    <img src="https://img.shields.io/powershellgallery/p/FactorioProfiles">
+</a>
 <a href="./LICENSE">
     <img src="https://img.shields.io/badge/license-GPLv3-blue">
 </a>
@@ -74,6 +76,7 @@ This will switch to the specified profile. You can now launch the game through S
 ### Documentation
 For a detailed rundown and explanation of all the features in this module, view the **help page** by running:
 ```powershell
+Import-Module FactorioProfiles
 Get-Help about_FactorioProfiles
 ```
 <!-- For detailed help about a specific cmdlet, run:
@@ -92,7 +95,7 @@ The `Name`/`Names` parameter supports tab-completion of **existing** `Profile` n
 - `Open-FactorioProfileFolder`
 
 #### Prompt support
-The cmdlets do not support the `-WhatIf` nor the `-Confirm` switches. However, if any ambiguous or dangerous operation arise, a prompt will be displayed asking for user input.
+The cmdlets do not support the `-WhatIf` nor the `-Confirm` switches. However, if any ambiguous or dangerous operations arise, a prompt will be displayed asking for user input.
 
 #### Formatting
 The `Profile` object within this module has custom formatting rules for all views. Simply pipe the output of the `Get-FactorioProfile` cmdlet to one of:
@@ -140,6 +143,7 @@ The built module will be located in the `.\publish` folder.
 ## Support
 ⚠If you need help regarding the usage of the module, please **first see the help page** by running:
 ```powershell
+Import-Module FactorioProfiles
 Get-Help about_FactorioProfiles
 ```
 
