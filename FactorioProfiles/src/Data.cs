@@ -100,6 +100,13 @@ namespace FactorioProfiles
 			document.Save(fullDatabasePath);
 		}
 
+		public static String GetGlobalProfilePath()
+		{
+			return System.IO.Path.Combine(
+				System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+				globalProfilePath);
+		}
+
 		public static String GetNewProfileSavePath()
 		{
 			// If the database exists, this value will be read from that.
