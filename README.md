@@ -1,7 +1,4 @@
-<picture align="center">
-    <source srcset="img/logo_dark.jpg" media="(prefers-color-scheme: dark)">
-    <img width="auto" src="img/logo.jpg">
-</picture>
+<img width="auto" src="img/logo.jpg">
 
 <br>
 <br>
