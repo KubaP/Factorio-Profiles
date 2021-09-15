@@ -23,6 +23,11 @@ namespace FactorioProfiles
 		// file. If a database file exists, this value should be read from there. 
 		private static string defaultProfileSavePath = @"%APPDATA%\Powershell\FactorioProfiles\Profiles";
 
+		// The current database version.
+		// ⚠ This should only be used when creating a new database file. If an existing database file exists,
+		// perform the migration process until you reach this version.
+		private static string databaseVersion = "0.1.1";
+
 		private static XmlDocument OpenFile()
 		{
 			var document = new XmlDocument();
@@ -49,7 +54,7 @@ namespace FactorioProfiles
 				// Create a 'Data' body element to contain all of the data nodes.
 				// Give it a version attribute, to allow for data migration if the data structure ever changes.
 				var body = document.CreateElement("Data");
-				body.SetAttribute("Version", "0.1.0");
+				body.SetAttribute("Version", databaseVersion);
 				document.AppendChild(body);
 
 				// Create a 'Config' element to contain configuration data which is related to the module
@@ -82,6 +87,10 @@ namespace FactorioProfiles
 				config.AppendChild(defaultPath);
 				config.AppendChild(defaultSharing);
 				body.AppendChild(config);
+
+				// Create an element to contain the information about which is the currently active profile.
+				var activeProfile = document.CreateElement("ActiveProfile");
+				body.AppendChild(activeProfile);
 
 				// Create an element to contain all of the 'Profile' class data from serialization.
 				var profiles = document.CreateElement("Profiles");
@@ -198,6 +207,34 @@ namespace FactorioProfiles
 			}
 
 			return null;
+		}
+
+		public static String GetActiveProfile()
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Select the 'ActiveProfile' node.
+			var node = document.DocumentElement.SelectSingleNode("/Data/ActiveProfile");
+
+			// If there is a value return that, otherwise return null.
+			if (String.IsNullOrWhiteSpace(node.InnerText))
+			{
+				return null;
+			}
+			return node.InnerText;
+		}
+
+		public static void SetActiveProfile(Profile profile)
+		{
+			// Load in the document.
+			var document = OpenFile();
+
+			// Select the 'ActiveProfile' node value.
+			document.DocumentElement.SelectSingleNode("/Data/ActiveProfile").InnerText = profile.Name;
+
+			// Save the changes to disk.
+			CloseFile(document);
 		}
 
 		public static void Add(Profile profile)
