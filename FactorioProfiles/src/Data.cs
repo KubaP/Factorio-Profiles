@@ -42,6 +42,7 @@ namespace FactorioProfiles
 				// Load an existing configuration file if one exists.
 				// TODO: Validate against a schema.
 				document.Load(fullDatabasePath);
+				MigrateData(document);
 			}
 			else
 			{
@@ -217,10 +218,12 @@ namespace FactorioProfiles
 			// Select the 'ActiveProfile' node.
 			var node = document.DocumentElement.SelectSingleNode("/Data/ActiveProfile");
 
-			// If there is a value return that, otherwise return null.
+			// If there is a value return that, otherwise return N/A.
+			// This can happen if the database has just been migrated but the 'Switch' cmdlet hasn't ran yet,
+			// if which case this will hold an empty value.
 			if (String.IsNullOrWhiteSpace(node.InnerText))
 			{
-				return null;
+				return "N/A";
 			}
 			return node.InnerText;
 		}
@@ -370,6 +373,30 @@ namespace FactorioProfiles
 
 			// Save the changes to disk.
 			CloseFile(document);
+		}
+
+		private static void MigrateData(XmlDocument document)
+		{
+			var version = document.SelectSingleNode("/Data").Attributes.GetNamedItem("Version").Value;
+
+			// Loop, migrating the database to each consecutive version until it's migrated to the latest.
+			while (!version.Equals(databaseVersion, StringComparison.OrdinalIgnoreCase))
+			{
+				if (version.Equals("0.1.0", StringComparison.OrdinalIgnoreCase))
+				{
+					// 0.1.0 -> 0.1.1
+					var activeProfile = document.CreateElement("ActiveProfile");
+					document.SelectSingleNode("/Data").InsertBefore(
+						activeProfile,
+						document.SelectSingleNode("/Data/Profiles")
+					);
+
+					document.SelectSingleNode("/Data").Attributes.GetNamedItem("Version").Value = "0.1.1";
+				}
+
+				// Update the version number for the loop check.
+				version = document.SelectSingleNode("/Data").Attributes.GetNamedItem("Version").Value;
+			}
 		}
 	}
 }
