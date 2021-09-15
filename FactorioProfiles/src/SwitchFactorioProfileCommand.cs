@@ -9,7 +9,7 @@ namespace FactorioProfiles
 	[OutputType(typeof(Profile))]
 	public class SwitchFactorioProfile : PSCmdlet
 	{
-		[Parameter(Position = 0)]
+		[Parameter(Position = 0, Mandatory = true)]
 		[ArgumentCompleter(typeof(NameCompleter))]
 		[Alias("Profile")]
 		public String Name { get; set; }

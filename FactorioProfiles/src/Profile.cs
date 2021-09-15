@@ -80,11 +80,10 @@ namespace FactorioProfiles
 			}
 
 			// Create any symlinks to the "global" profile depending on what settings are enabled.
-			SharingSettingFolder(false, Settings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
+			ShareSettingsFolder(false, Settings.ShareConfig, "config", cmdlet);
+			ShareSettingsFolder(false, Settings.ShareMods, "mods", cmdlet);
+			ShareSettingsFolder(false, Settings.ShareSaves, "saves", cmdlet);
+			ShareSettingsFolder(false, Settings.ShareScenarios, "scenarios", cmdlet);
 
 			// Add this profile to the database.
 			Data.Add(this);
@@ -142,18 +141,17 @@ namespace FactorioProfiles
 			// to the "global" profile.
 			// If a sharing option has been enabled, the symlink must be created.
 			// If a sharing option has been disabled, the symlink must be deleted.
-			SharingSettingFolder(Settings.ShareConfig, newSettings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareMods, newSettings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareSaves, newSettings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareScenarios, newSettings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareBlueprints, newSettings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
+			ShareSettingsFolder(Settings.ShareConfig, newSettings.ShareConfig, "config", cmdlet);
+			ShareSettingsFolder(Settings.ShareMods, newSettings.ShareMods, "mods", cmdlet);
+			ShareSettingsFolder(Settings.ShareSaves, newSettings.ShareSaves, "saves", cmdlet);
+			ShareSettingsFolder(Settings.ShareScenarios, newSettings.ShareScenarios, "scenarios", cmdlet);
 
 			// Update the database.
 			Settings = newSettings;
 			Data.UpdateProfileSharingSettings(this);
 		}
 
-		private void SharingSettingFolder(Boolean originalValue, Boolean newValue, String itemName, SymlinkType type, Cmdlet cmdlet)
+		private void ShareSettingsFolder(Boolean originalValue, Boolean newValue, String itemName, Cmdlet cmdlet)
 		{
 			// Get the full expanded path pointing to the "global" profile.
 			var globalProfilePath = System.IO.Path.Combine(
@@ -168,11 +166,6 @@ namespace FactorioProfiles
 				// Just delete symlink. Factorio will re-create any necessary folder or file afterwards.
 				try
 				{
-					// Call the appropriate deletion method depending on the type of item.
-					if (System.IO.File.Exists(itemPath))
-					{
-						System.IO.File.Delete(itemPath);
-					}
 					if (System.IO.Directory.Exists(itemPath))
 					{
 						System.IO.Directory.Delete(itemPath);
@@ -194,11 +187,6 @@ namespace FactorioProfiles
 				// First, delete the existing item.
 				try
 				{
-					// Call the appropriate deletion method depending on the type of item.
-					if (System.IO.File.Exists(itemPath))
-					{
-						System.IO.File.Delete(itemPath);
-					}
 					if (System.IO.Directory.Exists(itemPath))
 					{
 						System.IO.Directory.Delete(itemPath, true);
@@ -221,7 +209,7 @@ namespace FactorioProfiles
 					CreateSymbolicLink(
 						itemPath,
 						System.IO.Path.Combine(globalProfilePath, itemName),
-						type);
+						SymlinkType.Directory);
 				}
 				catch (System.Exception e)
 				{
@@ -308,6 +296,113 @@ namespace FactorioProfiles
 							ErrorCategory.InvalidOperation,
 							null));
 			}
+
+			// Update the active profile in the database.
+			Data.SetActiveProfile(this);
+
+			// If this profile is sharing blueprints, copy over the "global" blueprint file.
+			if (this.Settings.ShareBlueprints)
+			{
+				// Get the full expanded path pointing to the "global" profile.
+				var globalBlueprintPath = System.IO.Path.Combine(
+					System.IO.Path.Combine(
+						System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+						Data.globalProfilePath),
+					"blueprint-storage.dat");
+
+				// Get the path of the item being modified, i.e. a 'config' folder, a 'blueprint-storage.dat' file, etc.
+				var blueprintPath = System.IO.Path.Combine(Path, "blueprint-storage.dat");
+
+				// Validate that there is a global profile blueprint file to copy over.
+				if (!System.IO.File.Exists(globalBlueprintPath))
+				{
+					cmdlet.ThrowTerminatingError(
+						new ErrorRecord(
+							new PSInvalidOperationException(
+								$"This profile is sharing blueprints globally, but the global profile does not have a blueprint file!"),
+								"1",
+								ErrorCategory.InvalidOperation,
+								null));
+				}
+
+				// If the blueprint file already exists, delete it first otherwise the copy operation would be blocked.
+				if (System.IO.File.Exists(blueprintPath))
+				{
+					try
+					{
+						System.IO.File.Delete(blueprintPath);
+					}
+					catch (System.Exception e)
+					{
+						cmdlet.ThrowTerminatingError(
+							new ErrorRecord(
+								new PSInvalidOperationException(
+									$"Could not delete the blueprint file at '{blueprintPath}'! Details:\n{e.Message}"),
+									"1",
+									ErrorCategory.InvalidOperation,
+									null));
+					}
+				}
+
+				// Copy over the global profile blueprint file.
+				System.IO.File.Copy(globalBlueprintPath, blueprintPath, true);
+			}
+		}
+
+		public void Sync(Cmdlet cmdlet)
+		{
+			// The blueprint file may need syncing through a manual copy operation, unlike everything else which
+			// is just symlinked. See 'ARCHITECTURE.md' for details.
+
+			// Check if this profile even needs to sync.
+			if (!this.Settings.ShareBlueprints)
+			{
+				return;
+			}
+
+			// Get the full expanded path pointing to the "global" profile.
+			var globalBlueprintPath = System.IO.Path.Combine(
+				System.IO.Path.Combine(
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+					Data.globalProfilePath),
+				"blueprint-storage.dat");
+
+			// Get the path of the item being modified, i.e. a 'config' folder, a 'blueprint-storage.dat' file, etc.
+			var blueprintPath = System.IO.Path.Combine(Path, "blueprint-storage.dat");
+
+			// Validate that there is a profile blueprint file to copy over.
+			if (!System.IO.File.Exists(blueprintPath))
+			{
+				cmdlet.ThrowTerminatingError(
+					new ErrorRecord(
+						new PSInvalidOperationException(
+							$"This profile is sharing blueprints but it does not have a blueprint file!"),
+							"1",
+							ErrorCategory.InvalidOperation,
+							null));
+			}
+
+			// If the blueprint file already exists, delete it first otherwise the copy operation would be blocked.
+			if (System.IO.File.Exists(globalBlueprintPath))
+			{
+				try
+				{
+					System.IO.File.Delete(globalBlueprintPath);
+				}
+				catch (System.Exception e)
+				{
+					cmdlet.ThrowTerminatingError(
+						new ErrorRecord(
+							new PSInvalidOperationException(
+								$"Could not delete the blueprint file at '{globalBlueprintPath}'! Details:\n{e.Message}"),
+								"1",
+								ErrorCategory.InvalidOperation,
+								null));
+				}
+			}
+
+			// Copy over the global profile blueprint file.
+			System.IO.File.Copy(blueprintPath, globalBlueprintPath, true);
 		}
 
 		public void Destroy(Cmdlet cmdlet)

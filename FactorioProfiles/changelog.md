@@ -1,4 +1,18 @@
 ﻿# Changelog
+## 0.1.1 (2021-09-15)
+### Added
+ - `Sync-FactorioProfiles` cmdlet for syncing profiles if they are sharing blueprint data. For more information see the help page and the issue below.
+ - Explanation of the blueprint sharing issue in the `about_FactorioProfiles` help page.
+ - Store the currently active profile, and display this information in the `Get-FactorioProfileSettings` cmdlet.
+ - A `-GlobalProfile` switch to the `Open-FactorioProfileFolder` cmdlet to open the "global" profile which contains the shared content.
+
+### Changed
+ - Database version bump to `0.1.1` to hold the new data, and data migration logic from `0.1.0`.
+
+### Fixed
+ - Blueprint data not being correctly shared between profiles and the "global" profile. However, due to the limitations of factorio's behaviour, this has introduced the necessity for a new cmdlet, `Sync-FactorioProfiles`. For more information about this, see the help page.
+ - The `-Name` parameter for the `Switch-FactorioProfile` cmdlet not being mandatory.
+
 ## 0.1.0 (2021-08-29)
 ### Added
  - `New-FactorioProfile` cmdlet for creating a new profile folder.

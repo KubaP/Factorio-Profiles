@@ -57,6 +57,19 @@ HOW IT WORKS
     'Switch-FactorioProfile' cmdlet, which will link to the given profile.
 
 
+ == Whilst most of the sharing is done through symbolic links, the blueprint
+    file isn't. Because of an apparent limitation of factorio this method
+    does not work since factorio seems to completely delete and re-create
+    the 'blueprint-storage.dat' file every time it is modified.
+
+    Therefore, to "share" this file between multiple profiles, it must be
+    copied between the profiles rather than linked.
+
+ [!]Because of this limitation, if a profile is sharing blueprint data, you
+    must run the 'Sync-FactorioProfiles' cmdlet once you exit out of the game.
+    This will perform the copying for you and make it "seamless".
+
+
 
 CREATING A PROFILE
  == To create a new profile, run:
@@ -215,6 +228,16 @@ SWITCHING TO A PROFILE
     -Name
         Specifies the name of the profile to switch to.
      [!]This parameter has tab-completion support.
+
+
+
+SYNCING ALL PROFILES
+ == To sync a given profiles blueprint data, run:
+    
+        PS C:\> Sync-FactorioProfiles
+
+    This command will, if sharing blueprint data, sync this data with the
+    "global" profile. This is a workaround to the limitations of Factorio.
 
 
 

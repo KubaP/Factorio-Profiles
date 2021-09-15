@@ -3,7 +3,7 @@
 	RootModule = 'FactorioProfiles.psm1'
 	
 	# Version number of this module
-	ModuleVersion = '0.1.0'
+	ModuleVersion = '0.1.1'
 	
 	# ID used to uniquely identify this module
 	GUID = '41c85188-07ea-4949-bfb8-510b5cdcdf72'
@@ -46,6 +46,7 @@
 		'Set-FactorioProfileOption',
 		'Remove-FactorioProfile',
 		'Switch-FactorioProfile',
+		'Sync-FactorioProfiles',
 		'Open-FactorioProfileFolder'
 	)
 	
