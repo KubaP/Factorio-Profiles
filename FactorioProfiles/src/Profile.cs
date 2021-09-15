@@ -80,11 +80,11 @@ namespace FactorioProfiles
 			}
 
 			// Create any symlinks to the "global" profile depending on what settings are enabled.
-			SharingSettingFolder(false, Settings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(false, Settings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
+			ShareSettingsFolder(false, Settings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(false, Settings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(false, Settings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(false, Settings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(false, Settings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
 
 			// Add this profile to the database.
 			Data.Add(this);
@@ -142,18 +142,18 @@ namespace FactorioProfiles
 			// to the "global" profile.
 			// If a sharing option has been enabled, the symlink must be created.
 			// If a sharing option has been disabled, the symlink must be deleted.
-			SharingSettingFolder(Settings.ShareConfig, newSettings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareMods, newSettings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareSaves, newSettings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareScenarios, newSettings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
-			SharingSettingFolder(Settings.ShareBlueprints, newSettings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
+			ShareSettingsFolder(Settings.ShareConfig, newSettings.ShareConfig, "config", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(Settings.ShareMods, newSettings.ShareMods, "mods", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(Settings.ShareSaves, newSettings.ShareSaves, "saves", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(Settings.ShareScenarios, newSettings.ShareScenarios, "scenarios", SymlinkType.Directory, cmdlet);
+			ShareSettingsFolder(Settings.ShareBlueprints, newSettings.ShareBlueprints, "blueprint-storage.dat", SymlinkType.File, cmdlet);
 
 			// Update the database.
 			Settings = newSettings;
 			Data.UpdateProfileSharingSettings(this);
 		}
 
-		private void SharingSettingFolder(Boolean originalValue, Boolean newValue, String itemName, SymlinkType type, Cmdlet cmdlet)
+		private void ShareSettingsFolder(Boolean originalValue, Boolean newValue, String itemName, SymlinkType type, Cmdlet cmdlet)
 		{
 			// Get the full expanded path pointing to the "global" profile.
 			var globalProfilePath = System.IO.Path.Combine(
