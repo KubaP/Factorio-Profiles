@@ -46,6 +46,7 @@
 		'Set-FactorioProfileOption',
 		'Remove-FactorioProfile',
 		'Switch-FactorioProfile',
+		'Sync-FactorioProfiles',
 		'Open-FactorioProfileFolder'
 	)
 	
