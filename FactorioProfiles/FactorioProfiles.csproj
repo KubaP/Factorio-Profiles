@@ -4,11 +4,18 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>FactorioProfiles</AssemblyName>
     <BaseOutputPath>bin</BaseOutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <XmlDoc2CmdletDocStrict>true</XmlDoc2CmdletDocStrict> <!-- Doesn't allow compilation if some cmdlets are not fully documented. -->
+    <NoWarn>1591</NoWarn> <!-- Hides warnings regarding missing XML documentation. -->
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.0">
       <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="XmlDoc2CmdletDoc" Version="0.4.0-dotnetcore0000">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
