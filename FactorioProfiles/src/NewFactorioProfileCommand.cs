@@ -5,38 +5,102 @@ using System.Management.Automation.Host;
 
 namespace FactorioProfiles
 {
+	/// <summary>
+	/// <para type="synopsis">Creates a new Factorio profile.</para>
+	/// <para type="description">The `New-FactorioProfile` cmdlet creates a new Factorio profile and optionally initialises it with non-default settings.</para>
+	/// <example>
+	/// 	<code>PS C:\> New-FactorioProfile -Name "modded game"</code>
+	/// 	<para>Creates a new profile named "modded game".</para>
+	/// 	<para></para>
+	/// 	<para></para>
+	/// </example>
+	/// <example>
+	/// 	<code>PS C:\> New-FactorioProfile -Name "modded" -ShareMods true</code>
+	/// 	<para>Creates a new profile named "modded", setting the sharing of mods to true.</para>
+	/// 	<para></para>
+	/// 	<para></para>
+	/// </example>
+	/// <example>
+	/// 	<code>PS C:\> New-FactorioProfile -Name "vanilla" -ShareConfig false -ShareBlueprints true</code>
+	/// 	<para>Creates a new profile named "vanilla", and sets some of the sharing settings.</para>
+	/// 	<para>If the default setting is to share the configuration file, this invocation explicitly overrides the value to false.</para>
+	/// 	<para>This invocation explicitly sets the blueprint sharing setting to true.</para>
+	/// 	<para></para>
+	/// 	<para></para>
+	/// </example>
+	/// <list type="alertSet">
+	/// 	<item>
+	/// 		<term></term>
+	/// 		<description>
+	/// 			<para>Profile settings</para>
+	/// 			<para>By default, the profile will use the default settings when created; to see the default settings, run the `Get-FactorioProfileSettings` cmdlet. The parameters can override these defaults as seen in the examples, whether to enable sharing of something which isn't shared by default, or to disable sharing if true by default.</para>
+	/// 			<para></para>
+	/// 			<para>Usage</para>
+	/// 			<para></para>
+	/// 			<para>After you run this cmdlet, you have an empty Factorio profile ready. You can either launch the game, or place saves/mods/other files within the profile; this can be easily performed by running the `Open-FactorioProfileFolder` cmdlet. Remember to first switch to this profile before launching the game, by running the `Switch-FactorioProfile` cmdlet.</para>
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// <para type="link">about_FactorioProfiles</para>
+	/// </summary>
 	[Cmdlet(VerbsCommon.New, "FactorioProfile")]
 	[OutputType(typeof(Profile))]
 	public class NewFactorioProfile : PSCmdlet
 	{
+		/// <summary>
+		/// <para type="description">Specifies the name of the new profile. This name cannot be already taken.</para>
+		/// </summary>
 		[Parameter(Position = 0, Mandatory = true)]
 		public String Name { get; set; }
 
+		/// <summary>
+		/// <para type="description">Specifies whether this profile will share the configuration file globally.</para>
+		/// <para type="description">Accepted values: `true`, `false`.</para>
+		/// </summary>
 		[Parameter(Position = 1)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
 		public String ShareConfig { get; set; }
 
+		/// <summary>
+		/// <para type="description">Specifies whether this profile will share mods globally.</para>
+		/// <para type="description">Accepted values: `true`, `false`.</para>
+		/// </summary>
 		[Parameter(Position = 2)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
 		public String ShareMods { get; set; }
 
+		/// <summary>
+		/// <para type="description">Specifies whether this profile will share saves globally.</para>
+		/// <para type="description">Accepted values: `true`, `false`.</para>
+		/// </summary>
 		[Parameter(Position = 3)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
 		public String ShareSaves { get; set; }
 
+		/// <summary>
+		/// <para type="description">Specifies whether this profile will share scenarios globally.</para>
+		/// <para type="description">Accepted values: `true`, `false`.</para>
+		/// </summary>
 		[Parameter(Position = 4)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
 		public String ShareScenarios { get; set; }
 
+		/// <summary>
+		/// <para type="description">Specifies whether this profile will share blueprints globally.</para>
+		/// <para type="description">Accepted values: `true`, `false`.</para>
+		/// </summary>
 		[Parameter(Position = 5)]
 		[AllowNull]
 		[ValidateSet("true", "false")]
 		public String ShareBlueprints { get; set; }
 
+		/// <summary>
+		/// <para type="description">Specifies at which path to create the profile folder.</para>
+		/// </summary>
 		[Parameter(Position = 6)]
 		public String Path { get; set; }
 

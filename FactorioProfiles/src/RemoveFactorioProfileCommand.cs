@@ -4,9 +4,32 @@ using System.Linq;
 
 namespace FactorioProfiles
 {
+	/// <summary>
+	/// <para type="synopsis">Deletes the specified Factorio profile.</para>
+	/// <para type="description">The `Remove-FactorioProfile` cmdlet deletes an existing Factorio profile.</para>
+	/// <example>
+	/// 	<code>PS C:\> Remove-FactorioProfile -Name "vanilla"</code>
+	/// 	<para>Deletes the profile named "vanilla".</para>
+	/// 	<para></para>
+	/// 	<para></para>
+	/// </example>
+	/// <list type="alertSet">
+	/// 	<item>
+	/// 		<term></term>
+	/// 		<description>
+	/// 			<para>[!] This action is not undoable.</para>
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// <para type="link">about_FactorioProfiles</para>
+	/// </summary>
 	[Cmdlet(VerbsCommon.Remove, "FactorioProfile")]
 	public class RemoveFactorioProfile : PSCmdlet
 	{
+		/// <summary>
+		/// <para type="description">Specifies the name of the existing profile to delete.</para>
+		/// <para type="description">[!] This value supports auto-completion.</para>
+		/// </summary>
 		[Parameter(Position = 0, Mandatory = true)]
 		[ArgumentCompleter(typeof(NameCompleter))]
 		[Alias("Profile")]

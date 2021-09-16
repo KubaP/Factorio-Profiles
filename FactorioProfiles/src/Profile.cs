@@ -5,7 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace FactorioProfiles
 {
-	class ShareSettings
+	/// <summary>
+	/// <para type="description">Contains information about a Factorio profiles sharing settings.</para>
+	/// </summary>
+	public class ShareSettings
 	{
 		// Each flag determines if this profile shares anything with the "global" profile.
 		// This can be used, for example, to share blueprints between many profiles.
@@ -45,7 +48,10 @@ namespace FactorioProfiles
 		}
 	}
 
-	class Profile
+	/// <summary>
+	/// <para type="description">Contains information about a Factorio profile.</para>
+	/// </summary>
+	public class Profile
 	{
 		// The unique name of this profile.
 		public string Name;

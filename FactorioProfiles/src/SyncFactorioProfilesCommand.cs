@@ -4,6 +4,27 @@ using System.Linq;
 
 namespace FactorioProfiles
 {
+	/// <summary>
+	/// <para type="synopsis">Syncs the specified Factorio profile.</para>
+	/// <para type="description">The `Sync-FactorioProfile` cmdlet syncs the blueprint data from the last active Factorio profile to other profiles which share blueprint data.</para>
+	/// <example>
+	/// 	<code>PS C:\> Sync-FactorioProfile</code>
+	/// 	<para>Syncs the last active profile, whatever that may be.</para>
+	/// 	<para></para>
+	/// 	<para></para>
+	/// </example>
+	/// <list type="alertSet">
+	/// 	<item>
+	/// 		<term></term>
+	/// 		<description>
+	/// 			<para>Usage</para>
+	/// 			<para></para>
+	/// 			<para>If a profile is sharing blueprints globally, this cmdlet must be run once you finish and exit out of the game. This is unfortunately a requirement due to the limitations of the game. For more information see the `about_FactorioProfiles` help page.</para>
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// <para type="link">about_FactorioProfiles</para>
+	/// </summary>
 	[Cmdlet(VerbsData.Sync, "FactorioProfiles")]
 	[OutputType(typeof(Profile))]
 	public class SyncFactorioProfiles : PSCmdlet

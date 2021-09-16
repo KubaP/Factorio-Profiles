@@ -5,10 +5,35 @@ using System.Linq;
 
 namespace FactorioProfiles
 {
+	/// <summary>
+	/// <para type="synopsis">Activates the specified Factorio profile.</para>
+	/// <para type="description">The `Switch-FactorioProfile` cmdlet switches to an existing Factorio profile, allowing you to launch the game with said profile.</para>
+	/// <example>
+	/// 	<code>PS C:\> Switch-FactorioProfile -Name "vanilla"</code>
+	/// 	<para>Switches to the profile named "vanilla". The next time you launch the game this profile will be in use.</para>
+	/// 	<para></para>
+	/// 	<para></para>
+	/// </example>
+	/// <list type="alertSet">
+	/// 	<item>
+	/// 		<term></term>
+	/// 		<description>
+	/// 			<para>Usage</para>
+	/// 			<para></para>
+	/// 			<para>If this profile is sharing blueprints globally, once you finish and exit out of the game, you must run the `Sync-FactorioProfile` cmdlet. This is unfortunately a requirement due to the limitations of the game. For more information see the `about_FactorioProfiles` help page.</para>
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// <para type="link">about_FactorioProfiles</para>
+	/// </summary>
 	[Cmdlet(VerbsCommon.Switch, "FactorioProfile")]
 	[OutputType(typeof(Profile))]
 	public class SwitchFactorioProfile : PSCmdlet
 	{
+		/// <summary>
+		/// <para type="description">Specifies the name of the existing profile to switch to.</para>
+		/// <para type="description">[!] This value supports auto-completion.</para>
+		/// </summary>
 		[Parameter(Position = 0, Mandatory = true)]
 		[ArgumentCompleter(typeof(NameCompleter))]
 		[Alias("Profile")]
