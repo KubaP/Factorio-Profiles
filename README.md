@@ -76,10 +76,10 @@ For a detailed rundown and explanation of all the features in this module, view 
 Import-Module FactorioProfiles
 Get-Help about_FactorioProfiles
 ```
-<!-- For detailed help about a specific cmdlet, run:
+For detailed help about a specific cmdlet, run:
 ```powershell
 Get-Help <COMMAND NAME> -Full
-``` -->
+```
 
 ### Extra features
 
