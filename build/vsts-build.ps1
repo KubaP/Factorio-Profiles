@@ -111,6 +111,10 @@ Copy-Item -Path "$WorkingDirectory\FactorioProfiles\*" -Destination "$($publishD
 Copy-Item -Path "$WorkingDirectory\FactorioProfiles\bin\Release\netstandard2.0\FactorioProfiles.dll" `
 	-Destination "$($publishDir.FullName)\FactorioProfiles\bin" -Force -Verbose
 
+# Copy the .dll documentation file.
+Copy-Item -Path "$WorkingDirectory\FactorioProfiles\bin\Release\netstandard2.0\FactorioProfiles.dll-Help.xml" `
+	-Destination "$($publishDir.FullName)\FactorioProfiles\en-us" -Force -Verbose
+
 # Modify a string in the .psm1 file to tell it that it is a packaged release, and to load the 
 # binary .dll from the correct directory.
 Write-Header -Message "Updating & Replacing text" -Colour Cyan
