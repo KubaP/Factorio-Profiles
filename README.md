@@ -1,4 +1,5 @@
-<img width="auto" src="img/logo.jpg">
+![Banner](./img/logo.png#gh-light-mode-only)
+![Banner](./img/logo_dark.png#gh-dark-mode-only)
 
 <br>
 <br>
